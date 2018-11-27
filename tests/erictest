@@ -1,9 +1,9 @@
 main()
 
 def main()
+    "2 < 3? "  print( lt(2,3) ) nl()
     nl()
     "hello world"
     nl()
-
     return 0
 end

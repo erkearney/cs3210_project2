@@ -173,7 +173,7 @@ public class Node {
             }
         }
         else if ( kind.equals("prtstr") ) {
-            System.out.println( info );
+            System.out.print( info );
         }
         else if ( kind.equals("bif0") ) {
             //System.out.println("Got a bif0");    
@@ -189,6 +189,12 @@ public class Node {
         }
         else if ( kind.equals("bif1") ) {
             //System.out.println("Got a bif1"); 
+            switch ( this.info ) {
+                case "print":
+                    double writeString = this.first.evaluate();
+                    System.out.println(writeString);
+            }
+
         }
         else if ( kind.equals("return") ) {
             //System.out.println("Got return");
@@ -382,6 +388,7 @@ public class Node {
             System.out.println("term " + this.info);
         }
         // TODO implement the other bif1s
+        /*
         else if ( kind.equals("bif1") ) {
             if ( info.equals("print") ) {
                 System.out.println(first.evaluate());
@@ -407,6 +414,7 @@ public class Node {
                 }
             } 
         }
+        */
         /* ******************** */
         else if ( kind.equals("num") ) {
             return Double.parseDouble( info );
