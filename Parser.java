@@ -43,11 +43,11 @@ public class Parser {
       Token token = lex.getNextToken();
       if( token.isKind( "funcDef" ) ) {
          Node second = parseFuncDef();
-         System.out.println("Finished parsing <funcDefs> -> <funcDef> <funcDefs>");
+         //System.out.println("Finished parsing <funcDefs> -> <funcDef> <funcDefs>");
          return new Node( "funcDefs", first, second, null );
       }
       else {
-         System.out.println("Finished parsing <funcDefs> -> <funcDef>");
+         //System.out.println("Finished parsing <funcDefs> -> <funcDef>");
          return new Node( "funcDefs", first, null, null );
       }
    } // <funcDefs>
@@ -104,12 +104,12 @@ public class Parser {
          }
          else {
              lex.putBackToken( token );
-             Node first = parseStatements();
+             Node second = parseStatements();
              //System.out.println("Checking for end");
              token = lex.getNextToken();
              errorCheck( token, "end", "", "funcDef" );
              //System.out.println("Finished parsing <funcDef> -> def <var> ( ) <statements> end");
-             return new Node( "funcDef", functionName, first, null, null );
+             return new Node( "funcDef", functionName, null, second, null );
          }
       }
    } // funcDef
@@ -179,7 +179,7 @@ public class Parser {
         //System.out.println("-----> parsing <funcCall>:");
         // Check for built-in-functions
         Token token = lex.getNextToken();
-        //System.out.println("Token is " + token.getKind());
+        //System.out.println( token );
         if ( token.isKind("bif0") ) {
            // Check for the ( )
            token = lex.getNextToken();
@@ -197,15 +197,16 @@ public class Parser {
                   token.isKind("round") ||
                   token.isKind("trunc") ||
                   token.isKind("bif1") ) {
+            String bif1Name = token.getDetails();
+            System.out.println(bif1Name);
             token = lex.getNextToken();
             errorCheck(token, "Single", "(", "funcCall" );
-            token = lex.getNextToken();
-            lex.putBackToken(token);
             Node first = parseExpr();
             token = lex.getNextToken();
             errorCheck(token, "Single", ")", "funcCall" );
             //System.out.println("Finished parsing <funcCall> -> <bif1>");
-            return new Node("bif1", token.getDetails(), first, null, null);
+            //System.out.println("Creating a bif1 Node with " + token.getDetails() );
+            return new Node("bif1", bif1Name, first, null, null);
         }
         else if ( token.isKind("pow") ||
                   token.isKind("lt") ||
@@ -382,7 +383,7 @@ public class Parser {
       else {// is just one term
          lex.putBackToken( token );
          //System.out.println("Finished parsing <expr> -> <term>");
-         return new Node( "expr", first, null, null );
+         return new Node( "expr", "term", first, null, null );
       }
 
    }// <expr>
@@ -405,7 +406,7 @@ public class Parser {
       else {// is just one factor
          lex.putBackToken( token );
          //System.out.println("Finished parsing <term> -> <factor>");
-         return first;
+         return new Node( "term", token.getDetails(), first, null, null );
       }
       
    }// <term>

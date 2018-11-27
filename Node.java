@@ -154,12 +154,37 @@ public class Node {
            }
 
            // evaluate the <funcCall>
-           System.out.println("Evaluating " + first);
+           //System.out.println("Evaluating " + first);
            first.evaluate();
         }
         else if ( kind.equals("funcDef") ) {
-           
+            //System.out.println("funcDef: Executing " + this.info);
+
+            Node params = first;
+            // TODO take care of arguments
+
+            Node statements = second;
+            if ( statements != null ) {
+                //System.out.println("Executing statements");
+                statements.execute();
+            }
+            else {
+                System.out.println("No statements found");
+            }
         }
+        else if ( kind.equals("prtstr") ) {
+            System.out.println( info );
+        }
+        else if ( kind.equals("bif1") ) {
+            //System.out.println("Got a bif1"); 
+            this.evaluate();
+        }
+        else if ( kind.equals("return") ) {
+            //System.out.println("Got return");
+        }
+
+
+        /* ********************************* */
         else if ( kind.equals("stmts") ) {
             if ( first != null ) {
                 first.execute();
@@ -167,10 +192,6 @@ public class Node {
                     second.execute();
                 }
             }
-        }
-
-        else if ( kind.equals("prtstr") ) {
-            System.out.print( info );
         }
 
         else if ( kind.equals("prtexp") ) {
@@ -219,10 +240,10 @@ public class Node {
 
         else if (kind.equals("funcCall")) {
             if (first != null) {
-                System.out.println("Executing " + first);
+                //System.out.println("Executing " + first);
                 first.execute();
                 if (second != null) {
-                    System.out.println("Executing " + second);
+                    //System.out.println("Executing " + second);
                     second.execute();
                 }
             }
@@ -255,7 +276,6 @@ public class Node {
         }
 
         else if (kind.equals("args")) {
-            // NOTICE: This is not finished in parser
             if (first != null) {
                 first.execute();
                 if (second != null) {
@@ -269,10 +289,12 @@ public class Node {
             table.store(info, value);
         }
 
+        /*
         else if ( kind.equals("term") ) {
             double value = this.evaluate();
             table.store(info, value);
         }
+        */
 
         else if ( kind.equals("num")) {
             double value = this.evaluate();
@@ -302,7 +324,7 @@ public class Node {
 
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
-            System.out.println(this.info);
+            //System.out.println(this.info);
 
             boolean found = false;
             // funcDefs starts out as the first funcDefs Node created by Parser
@@ -316,7 +338,7 @@ public class Node {
                     found = true;
                     // Reset checkFunction to beginning
                     checkFunction = funcDefs;
-                    System.out.println("Executing " + checkFunctionName);
+                    //System.out.println("Found " + checkFunctionName);
                     checkFunction.first.execute();
                 }
                 else {
@@ -335,16 +357,46 @@ public class Node {
             }
 
         }
+        else if ( kind.equals("expr") ) {
+            //System.out.println("expr");
+            if ( this.info.equals("term") ) {
+                System.out.println("term " + first.info);
+                return first.evaluate();
+            }
+            else {
+                // TODO, implement + and -
+            }
+        }
+        else if ( kind.equals("term") ) {
+            System.out.println("term " + this.info);
+        }
+        // TODO implement the other bif1s
         else if ( kind.equals("bif1") ) {
             if ( info.equals("print") ) {
-                System.out.println("test");
+                System.out.println(first.evaluate());
+                return 0;
             }
             else {
                 System.out.format("ERROR: For some reason I thought %s was a "
-                                   + "bif1, maybe parser messed up?", this.info);
+                                   + "bif1, maybe parser messed up?\n", this.info);
                 System.exit(1);
             }
         }
+        // TODO implement the other bif2s
+        else if ( kind.equals("bif2") ) {
+            if ( info.equals("le") ) {
+                //System.out.println("le");
+                // first <= second
+                double x = first.evaluate();
+                double y = first.evaluate();
+                if ( x <= y ) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } 
+        }
+        /* ******************** */
         else if ( kind.equals("num") ) {
             return Double.parseDouble( info );
         }
@@ -422,19 +474,6 @@ public class Node {
                 return 1;
             }
             return 0;
-        }
-        // TODO implement the other bif2s
-        else if ( kind.equals("bif2") ) {
-            if ( info.equals("le") ) {
-                // first <= second
-                double x = first.evaluate();
-                double y = first.evaluate();
-                if ( x <= y ) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            } 
         }
         else if ( kind.equals("eq") ) {
             double value1 = first.evaluate();
