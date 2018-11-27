@@ -175,9 +175,20 @@ public class Node {
         else if ( kind.equals("prtstr") ) {
             System.out.println( info );
         }
+        else if ( kind.equals("bif0") ) {
+            //System.out.println("Got a bif0");    
+            // Currently the only bif0 is nl()
+            switch ( this.info ) {
+                case "nl":
+                    System.out.print("\n");
+                    break;
+                default:
+                    System.out.println("ERROR: Unrecognized bif0: " + this.info);
+                    System.exit(1);
+            }
+        }
         else if ( kind.equals("bif1") ) {
             //System.out.println("Got a bif1"); 
-            this.evaluate();
         }
         else if ( kind.equals("return") ) {
             //System.out.println("Got return");

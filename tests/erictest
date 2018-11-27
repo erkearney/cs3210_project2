@@ -1,7 +1,9 @@
 main()
 
 def main()
+    nl()
     "hello world"
+    nl()
 
     return 0
 end

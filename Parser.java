@@ -182,12 +182,13 @@ public class Parser {
         //System.out.println( token );
         if ( token.isKind("bif0") ) {
            // Check for the ( )
+           String bif0Name = token.getDetails();
            token = lex.getNextToken();
            errorCheck( token, "Single", "(", "funcCall" );
            token = lex.getNextToken();
            errorCheck( token, "Single", ")", "funcCall" );
            //System.out.println("Finished parsing <funcCall> -> <bif0>");
-           return new Node("bif0", token.getDetails(), null, null, null);
+           return new Node("bif0", bif0Name, null, null, null);
         }
         else if ( token.isKind("sqrt") ||
                   token.isKind("cos") ||
@@ -433,8 +434,6 @@ public class Parser {
             lex.putBackToken( token );
             lex.putBackToken( temp );
             Node first = parseFuncCall();
-            token = lex.getNextToken();
-            errorCheck( token, "Single", ")", "factor" );
             //System.out.println("Finished parsing <factor> -> <funcCall>");
             return new Node("factor", first, null, null);
          }
