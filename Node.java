@@ -13,6 +13,9 @@ public class Node {
 
     private int id;
 
+    private static Node funcDefs; // Points to function Definition nodes,
+                                  // used for funcCall, see README
+
     private String kind;  // non-terminal or terminal category for the node
     private String info;  // extra information about the node such as
     // the actual identifier for an I
@@ -145,6 +148,9 @@ public class Node {
            }
            else if ( second == null ) {
               System.out.println("WARNING: This program has no function definitions");
+           }
+           else {
+              funcDefs = second; 
            }
 
            // evaluate the <funcCall>
@@ -297,6 +303,37 @@ public class Node {
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
             System.out.println(this.info);
+
+            boolean found = false;
+            // funcDefs starts out as the first funcDefs Node created by Parser
+            // we need to check all the funcDefs until we find one with the
+            // same name as the one that was just called.
+            Node checkFunction = funcDefs;
+            while ( !found ) {
+                String checkFunctionName = checkFunction.first.info;
+                //System.out.format("Comparing %s to %s\n", functionName, checkFunctionName);
+                if ( functionName.equals(checkFunctionName) ) {
+                    found = true;
+                    // Reset checkFunction to beginning
+                    checkFunction = funcDefs;
+                    System.out.println("Executing " + checkFunctionName);
+                    checkFunction.first.execute();
+                }
+                else {
+                    if ( checkFunction.second != null ) {
+                        // If this node was of form <funcDefs> -> <funcDef> <funcDefs>,
+                        // check the next <funcDefs> node
+                        checkFunction = checkFunction.second;
+                    }
+                    else {
+                        // We've checked all the function definitions,
+                        // and didn't find a match.
+                        System.out.format("ERROR: %s is undefined\n", functionName);
+                        System.exit(1);
+                    }
+                }
+            }
+
         }
         else if ( kind.equals("bif1") ) {
             if ( info.equals("print") ) {
