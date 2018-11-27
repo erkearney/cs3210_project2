@@ -16,6 +16,11 @@ public class Node {
     private static Node funcDefs; // Points to function Definition nodes,
                                   // used for funcCall, see README
 
+    private static Node args;     // A global args pointer, whenever a function
+                                  // is called, this points to the first child
+                                  // of the called functions' funcDef node, 
+                                  // which will be of type args
+
     private String kind;  // non-terminal or terminal category for the node
     private String info;  // extra information about the node such as
     // the actual identifier for an I
@@ -175,6 +180,11 @@ public class Node {
         else if ( kind.equals("prtstr") ) {
             System.out.print( info );
         }
+        else if ( kind.equals("funcCall") ) {
+            args = this.first;  // grab the args node
+            System.out.println(this.info + " called");
+            System.out.println("Got args " + args);
+        }
         else if ( kind.equals("bif0") ) {
             //System.out.println("Got a bif0");    
             // Currently the only bif0 is nl()
@@ -191,10 +201,18 @@ public class Node {
             //System.out.println("Got a bif1"); 
             switch ( this.info ) {
                 case "print":
+                    System.out.println("Print first type: " + this.first.kind);
                     double writeString = this.first.evaluate();
                     System.out.println(writeString);
             }
 
+        }
+        else if ( kind.equals("bif2") ) {
+            System.out.println("Got a bif2 " + this.info);
+            switch ( this.info ) {
+                case "le":
+                    System.out.println("le");
+            }
         }
         else if ( kind.equals("return") ) {
             //System.out.println("Got return");
@@ -255,6 +273,7 @@ public class Node {
             }
         }
 
+        /*
         else if (kind.equals("funcCall")) {
             if (first != null) {
                 //System.out.println("Executing " + first);
@@ -265,6 +284,7 @@ public class Node {
                 }
             }
         }
+        */
 
         else if (kind.equals("param")) {
             if (first != null) {
