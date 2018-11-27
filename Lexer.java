@@ -273,13 +273,13 @@ public class Lexer {
 
     public Token getNextToken() {
         Token token = getNext();
-        System.out.println("                     got token: " + token );
+        //System.out.println("                     got token: " + token );
         return token;
     }
 
     public void putBackToken( Token token )
     {
-        System.out.println( margin + "put back token " + token.toString() );
+        //System.out.println( margin + "put back token " + token.toString() );
         stack.push( token );
     }
 

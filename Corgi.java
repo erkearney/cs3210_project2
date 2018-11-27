@@ -1,3 +1,4 @@
+// A huge thank you to this group for sharing their project with helped us a lot!
 //https://github.com/jamesahhh/Corgi
 import java.util.Scanner;
 
@@ -26,7 +27,7 @@ public class Corgi {
     TreeViewer viewer = new TreeViewer("Parse Tree", 0, 0, 800, 500, root );
 
     // execute the parse tree
-    // root.execute();
+    root.execute();
 
   }// main
 

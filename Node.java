@@ -137,7 +137,24 @@ public class Node {
     // (for nodes that don't return a value)
     public void execute() {
 
-        if ( kind.equals("stmts") ) {
+        if ( kind.equals("program") ) {
+           // <program> -> <funcCall> | <funcCall> <funcDefs>
+           if ( first == null ) {
+              System.out.println("A Corgi program must have at least one function call");
+              System.exit(1);
+           }
+           else if ( second == null ) {
+              System.out.println("WARNING: This program has no function definitions");
+           }
+
+           // evaluate the <funcCall>
+           System.out.println("Evaluating " + first);
+           first.evaluate();
+        }
+        else if ( kind.equals("funcDef") ) {
+           
+        }
+        else if ( kind.equals("stmts") ) {
             if ( first != null ) {
                 first.execute();
                 if ( second != null ) {
@@ -196,8 +213,10 @@ public class Node {
 
         else if (kind.equals("funcCall")) {
             if (first != null) {
+                System.out.println("Executing " + first);
                 first.execute();
                 if (second != null) {
+                    System.out.println("Executing " + second);
                     second.execute();
                 }
             }
@@ -275,7 +294,21 @@ public class Node {
     // compute and return value produced by this node
     public double evaluate() {
 
-        if ( kind.equals("num") ) {
+        if ( kind.equals("funcCall") ) {
+            String functionName = this.info;
+            System.out.println(this.info);
+        }
+        else if ( kind.equals("bif1") ) {
+            if ( info.equals("print") ) {
+                System.out.println("test");
+            }
+            else {
+                System.out.format("ERROR: For some reason I thought %s was a "
+                                   + "bif1, maybe parser messed up?", this.info);
+                System.exit(1);
+            }
+        }
+        else if ( kind.equals("num") ) {
             return Double.parseDouble( info );
         }
 
@@ -353,7 +386,19 @@ public class Node {
             }
             return 0;
         }
-
+        // TODO implement the other bif2s
+        else if ( kind.equals("bif2") ) {
+            if ( info.equals("le") ) {
+                // first <= second
+                double x = first.evaluate();
+                double y = first.evaluate();
+                if ( x <= y ) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } 
+        }
         else if ( kind.equals("eq") ) {
             double value1 = first.evaluate();
             double value2 = second.evaluate();
@@ -377,6 +422,8 @@ public class Node {
             return 0;
         }
 
+        // TODO hopefully remove this
+        return -1337;
     }// evaluate
 
 }// Node
