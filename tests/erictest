@@ -1,6 +1,6 @@
 main()
 
 def main()
-    "2 < 3? "  print( lt(2,3) ) nl()
+    "2 < 3? "  print( lt(5,3) ) nl()
     return 0
 end

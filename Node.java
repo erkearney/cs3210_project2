@@ -165,10 +165,12 @@ public class Node {
         else if ( kind.equals("funcDef") ) {
             //System.out.println("funcDef: Executing " + this.info);
 
-            Node params = first;
+            Node params = this.first;
+            //System.out.println(params);
             // TODO take care of arguments
 
             Node statements = second;
+            //System.out.println(statements);
             if ( statements != null ) {
                 //System.out.println("Executing statements");
                 statements.execute();
@@ -177,14 +179,53 @@ public class Node {
                 System.out.println("No statements found");
             }
         }
+        else if ( kind.equals("funcCall" ) ) {
+            /*
+            System.out.println(this);    
+            System.out.println(this.first);
+            System.out.println(this.second);
+            */
+
+            switch (this.first.info) {
+                case "print":
+                    args = this.first.first;
+                    // print is a bif 1
+                    if ( args.first == null ) {
+                        System.out.println("ERROR: print takes 1 argument, use nl() to print an empty line");    
+                    } else if ( args.second != null ) {
+                        System.out.println("ERROR: print takes only 1 argument");    
+                    } else {
+                        Node arg = args.first;
+                        System.out.print(arg.evaluate());
+                    }
+                    break;
+                case "nl":
+                    System.out.print("\n");
+                    break;
+                default:
+                    System.out.println("Unrecognized funcCall");
+            }
+        }
+        else if ( kind.equals("stmts") ) {
+            Node statement = this.first;
+            //System.out.println("statement: " + statement);
+            statement.execute();
+            if ( this.second != null ) {
+                Node statements = this.second;
+                //System.out.println("statements: " + statements);
+                statements.execute();
+            }
+        }
         else if ( kind.equals("prtstr") ) {
             System.out.print( info );
         }
+        /*
         else if ( kind.equals("funcCall") ) {
             args = this.first;  // grab the args node
-            System.out.println(this.info + " called");
+            System.out.println(this);
             System.out.println("Got args " + args);
         }
+        */
         else if ( kind.equals("bif0") ) {
             //System.out.println("Got a bif0");    
             // Currently the only bif0 is nl()
@@ -201,14 +242,14 @@ public class Node {
             //System.out.println("Got a bif1"); 
             switch ( this.info ) {
                 case "print":
-                    System.out.println("Print first type: " + this.first.kind);
+                    //System.out.println("Print first type: " + this.first.kind);
                     double writeString = this.first.evaluate();
                     System.out.println(writeString);
             }
 
         }
         else if ( kind.equals("bif2") ) {
-            System.out.println("Got a bif2 " + this.info);
+            //System.out.println("Got a bif2 " + this.info);
             switch ( this.info ) {
                 case "le":
                     System.out.println("le");
@@ -220,6 +261,7 @@ public class Node {
 
 
         /* ********************************* */
+        /*
         else if ( kind.equals("stmts") ) {
             if ( first != null ) {
                 first.execute();
@@ -228,6 +270,7 @@ public class Node {
                 }
             }
         }
+        */
 
         else if ( kind.equals("prtexp") ) {
             double value = first.evaluate();
@@ -358,6 +401,7 @@ public class Node {
 
     // compute and return value produced by this node
     public double evaluate() {
+        //System.out.println("evaluate() called with " + this);
 
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
@@ -376,6 +420,9 @@ public class Node {
                     // Reset checkFunction to beginning
                     checkFunction = funcDefs;
                     //System.out.println("Found " + checkFunctionName);
+                    //System.out.println(this);
+                    //System.out.println(checkFunction);
+                    //System.out.println(checkFunction.first);
                     checkFunction.first.execute();
                 }
                 else {
@@ -394,10 +441,13 @@ public class Node {
             }
 
         }
+        else if ( kind.equals("arg") ) {
+            //System.out.println("arg: " + this);    
+        }
         else if ( kind.equals("expr") ) {
             //System.out.println("expr");
             if ( this.info.equals("term") ) {
-                System.out.println("term " + first.info);
+                //System.out.println("term " + first.info);
                 return first.evaluate();
             }
             else {
@@ -405,7 +455,31 @@ public class Node {
             }
         }
         else if ( kind.equals("term") ) {
-            System.out.println("term " + this.info);
+            //System.out.println("term " + this.info);
+        }
+        else if ( kind.equals("factor") ) {
+            if (this.second != null) {
+                return this.first.evaluate() * -1;    
+            }
+            else {
+                return this.first.evaluate();    
+            }
+        }
+        else if ( kind.equals("bif2") ) {
+            args = this.first;
+            double arg1 = args.first.evaluate();
+            args = args.second;
+            double arg2 = args.first.evaluate();
+            switch (this.info) {
+                case "lt":    
+                    if ( arg1 < arg2 ) {
+                        return 1;    
+                    } else {
+                        return 0;    
+                    }
+                default:
+                    System.out.println("ERROR: " + this.info + " was not recognized as a bif2");
+            }
         }
         // TODO implement the other bif1s
         /*
