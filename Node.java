@@ -266,6 +266,9 @@ public class Node {
             switch ( this.info ) {
                 case "le":
                     //System.out.println("le");
+                    break;
+                default:
+                    System.out.println("ERROR: " + this.info + " was not recognized as a bif2");
             }
         }
         else if ( kind.equals("return") ) {
@@ -283,7 +286,6 @@ public class Node {
                 }
             }
         }
-        */
 
         else if ( kind.equals("prtexp") ) {
             double value = first.evaluate();
@@ -328,6 +330,7 @@ public class Node {
                 }
             }
         }
+        */
 
         /*
         else if (kind.equals("funcCall")) {
@@ -403,9 +406,6 @@ public class Node {
                 third.execute();
             }
         }
-
-
-
         else {
             error("Unknown kind of node [" + kind + "]");
         }
@@ -478,6 +478,107 @@ public class Node {
                 return this.first.evaluate();    
             }
         }
+        else if ( kind.equals("num") ) {
+            return Integer.parseInt(this.info);
+        }
+        else if ( kind.equals("bif0") ) {
+            switch (this.info) {
+                case "nl":
+                    System.out.print("\n");
+                    return 0;
+                default:
+                    System.out.println("ERROR in evaluate: Unrecognized bif0: " + this.info);
+            }
+        }
+        else if ( kind.equals("bif1") ) {
+            args = this.first;
+            double arg1 = this.first.evaluate();
+            switch (this.info) {
+                case "not":
+                    if ( arg1 == 0 ) {
+                        return 1;    
+                    }
+                    else {
+                        return 0;    
+                    }
+                case "print":
+                    this.execute();
+                    return 0;
+                case "round":
+                    return Math.round(arg1);
+                case "trunc":
+                    return Math.floor(arg1);
+                default:
+                    System.out.println("ERROR in evaluate: Unrecognized bi1 " + this.info);
+            }
+        }
+        else if ( kind.equals("bif2") ) {
+            args = this.first;
+            double arg1 = args.first.evaluate();
+            args = args.second;
+            double arg2 = args.first.evaluate();
+            switch (this.info) {
+                case "lt":
+                    if ( arg1 < arg2 ) {
+                        //System.out.println(arg1 + " is less than " + arg2);
+                        return 1;
+                    }
+                    else {
+                        //System.out.println(arg1 + " is not less than " + arg2);
+                        return 0;
+                    }
+                case "le":
+                    if ( arg1 <= arg2 ) {
+                        //System.out.println(arg1 + " is less than or equal to " + arg2);
+                        return 1;
+                    }
+                    else {
+                        //System.out.println(arg1 + " is not less than or equal to " + arg2);
+                        return 0;
+                    }
+                case "eq":
+                    if ( arg1 == arg2 ) {
+                        //System.out.println(arg1 + " is equal to " + arg2);
+                        return 1;
+                    }
+                    else {
+                        //System.out.println(arg1 + " is not equal to " + arg2);
+                        return 0;
+                    }
+                case "ne":
+                    if ( arg1 != arg2 ) {
+                        //System.out.println(arg1 + " is not equal to " + arg2);
+                        return 1;
+                    }
+                    else {
+                        //System.out.println(arg2 + " is equal to " + arg2);
+                        return 0;
+                    }
+                case "or":
+                    if ( arg1 != 0 || arg2 != 0 ) {
+                        //System.out.println(arg1 + " or " + arg2 + " is not 0");
+                        return 1;
+                    }
+                    else {
+                        //System.out.println(arg1 + " and " + arg2 + " are both 0");    
+                        return 0;
+                    }
+                case "and":
+                    if ( arg1 != 0 && arg2 != 0 ) {
+                       //System.out.println(arg1 + " and " + arg2 + " are both not 0");
+                       return 1;
+                    }
+                    else {
+                        //System.out.println(arg1 + " or " + arg2 + " are 0");
+                        return 0;
+                    }
+                default:
+                    System.out.println("ERROR in evaluate: Unrecognized bif2 " + this.info);
+                    return -1;
+            }    
+        }
+
+        /*
         else if ( kind.equals("bif0") ) {
             switch (this.info) {
                 case ("nl"):
@@ -492,6 +593,9 @@ public class Node {
                     System.out.println("ERROR: " + this.info + " was not recognized as a bif0");
                     System.exit(1);
             }    
+        }
+        else if ( kind.equals("bif1") ) {
+                
         }
         else if ( kind.equals("bif2") ) {
             args = this.first;
@@ -509,6 +613,7 @@ public class Node {
                     System.out.println("ERROR: " + this.info + " was not recognized as a bif2");
             }
         }
+        */
         // TODO implement the other bif1s
         /*
         else if ( kind.equals("bif1") ) {
@@ -538,6 +643,7 @@ public class Node {
         }
         */
         /* ******************** */
+        /*
         else if ( kind.equals("num") ) {
             return Double.parseDouble( info );
         }
@@ -633,6 +739,7 @@ public class Node {
             }
             return 0;
         }
+        */
 
         else {
             error("Unknown node kind [" + kind + "]");
