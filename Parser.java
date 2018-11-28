@@ -182,7 +182,6 @@ public class Parser {
         //System.out.println( token );
         String functionName = token.getDetails();
         //System.out.println("functionName: " + functionName);
-        //System.out.println(token);
         //System.out.println( token );
         if ( token.isKind("bif0") ) {
            // Check for the ( )
@@ -194,13 +193,13 @@ public class Parser {
            //System.out.println("Finished parsing <funcCall> -> <bif0>");
            return new Node("bif0", functionName, null, null, null);
         }
-        else if ( token.isKind("sqrt") ||
-                  token.isKind("cos") ||
-                  token.isKind("sin") ||
-                  token.isKind("atan") ||
-                  token.isKind("print") ||
-                  token.isKind("round") ||
-                  token.isKind("trunc") ||
+        else if ( //token.isKind("sqrt") ||
+                  //token.isKind("cos") ||
+                  //token.isKind("sin") ||
+                  //token.isKind("atan") ||
+                  //token.isKind("print") ||
+                  //token.isKind("round") ||
+                  //token.isKind("trunc") ||
                   token.isKind("bif1") ) {
             //String bif1Name = token.getDetails();
             token = lex.getNextToken();
@@ -213,17 +212,18 @@ public class Parser {
             errorCheck(token, "Single", ")", "funcCall" );
             */
             //System.out.println("Finished parsing <funcCall> -> <bif1>");
-            //System.out.println("Creating a bif1 Node with " + token.getDetails() );
+            //System.out.println("Creating a bif1 Node for " + functionName );
             //System.out.println("functionName: " + functionName);
             return new Node("bif1", functionName, first, null, null);
         }
-        else if ( token.isKind("pow") ||
-                  token.matches("bif2", "lt") ||
-                  token.matches("bif2", "le") ||
-                  token.isKind("eq") ||
-                  token.isKind("ne") ||
-                  token.isKind("or") ||
-                  token.isKind("and") ) {
+        else if ( //token.matches("bif2", "pow") ||
+                  //token.matches("bif2", "lt") ||
+                  //token.matches("bif2", "le") ||
+                  //token.matches("bif2", "eq") ||
+                  //token.matches("bif2", "ne") ||
+                  //token.matches("bif2", "or") ||
+                  //token.matches("bif2", "and") ) {
+                  token.isKind("bif2") ) {
             //String bif2Name = token.getDetails();
             token = lex.getNextToken();
             errorCheck( token, "Single", "(", "funcCall" );

@@ -144,6 +144,7 @@ public class Node {
     // ask this node to execute itself
     // (for nodes that don't return a value)
     public void execute() {
+        //System.out.println("Executing a " + this.kind + " " + this.info);
 
         if ( kind.equals("program") ) {
            // <program> -> <funcCall> | <funcCall> <funcDefs>
@@ -186,7 +187,9 @@ public class Node {
             System.out.println(this.second);
             */
 
-            switch (this.first.info) {
+            String functionName = this.first.info;
+            switch (functionName) {
+                // Check if the called function is a built-in function
                 case "print":
                     args = this.first.first;
                     // print is a bif 1
@@ -201,6 +204,11 @@ public class Node {
                     break;
                 case "nl":
                     System.out.print("\n");
+                    break;
+                case "input":
+                    // TODO implement variable storage
+                    String temp = keys.next();
+                    System.out.println("Temp is " + temp);
                     break;
                 default:
                     System.out.println("Unrecognized funcCall");
@@ -233,6 +241,11 @@ public class Node {
                 case "nl":
                     System.out.print("\n");
                     break;
+                case "input":
+                    // TODO implement variable storage
+                    String temp = keys.next();
+                    System.out.println("Temp is " + temp);
+                    break;
                 default:
                     System.out.println("ERROR: Unrecognized bif0: " + this.info);
                     System.exit(1);
@@ -252,7 +265,7 @@ public class Node {
             //System.out.println("Got a bif2 " + this.info);
             switch ( this.info ) {
                 case "le":
-                    System.out.println("le");
+                    //System.out.println("le");
             }
         }
         else if ( kind.equals("return") ) {
@@ -464,6 +477,21 @@ public class Node {
             else {
                 return this.first.evaluate();    
             }
+        }
+        else if ( kind.equals("bif0") ) {
+            switch (this.info) {
+                case ("nl"):
+                    this.execute();
+                    break;
+                case ("input"):
+                    // TODO implement variable storage on input
+                    //String temp = keys.next();
+                    this.execute();
+                    break;
+                default:
+                    System.out.println("ERROR: " + this.info + " was not recognized as a bif0");
+                    System.exit(1);
+            }    
         }
         else if ( kind.equals("bif2") ) {
             args = this.first;
