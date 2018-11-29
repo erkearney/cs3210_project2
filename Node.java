@@ -271,7 +271,11 @@ public class Node {
                     System.out.println("ERROR: " + this.info + " was not recognized as a bif2");
             }
         }
+        else if ( kind.equals("sto") ) {
+            System.out.println("sto");
+        }
         else if ( kind.equals("return") ) {
+            // TODO implement return
             //System.out.println("Got return");
         }
 
@@ -343,7 +347,6 @@ public class Node {
                 }
             }
         }
-        */
 
         else if (kind.equals("param")) {
             if (first != null) {
@@ -384,6 +387,7 @@ public class Node {
             double value = this.evaluate();
             table.store(info, value);
         }
+        */
 
         /*
         else if ( kind.equals("term") ) {
@@ -454,8 +458,16 @@ public class Node {
             }
 
         }
-        else if ( kind.equals("arg") ) {
-            //System.out.println("arg: " + this);    
+        else if ( kind.equals("args") ) {
+            //System.out.println("args: " + this);    
+            // TODO I *think* we should only get here if called from print,
+            // so we can assume that this args node has only one arg child,
+            // feels really sketchy though ...
+            if ( this.second != null ) {
+                System.out.println("Fix args");
+                return -1;
+            }
+            return this.first.evaluate();
         }
         else if ( kind.equals("expr") ) {
             //System.out.println("expr");
@@ -479,7 +491,7 @@ public class Node {
             }
         }
         else if ( kind.equals("num") ) {
-            return Integer.parseInt(this.info);
+            return Double.parseDouble(this.info);
         }
         else if ( kind.equals("bif0") ) {
             switch (this.info) {
@@ -508,6 +520,14 @@ public class Node {
                     return Math.round(arg1);
                 case "trunc":
                     return Math.floor(arg1);
+                case "sqrt":
+                    return Math.sqrt(arg1);
+                case "cos":
+                    return Math.cos(arg1);
+                case "sin":
+                    return Math.sin(arg1);
+                case "atan":
+                    return Math.atan(arg1);
                 default:
                     System.out.println("ERROR in evaluate: Unrecognized bi1 " + this.info);
             }
@@ -572,6 +592,8 @@ public class Node {
                         //System.out.println(arg1 + " or " + arg2 + " are 0");
                         return 0;
                     }
+                case "pow":
+                    return Math.pow(arg1, arg2);
                 default:
                     System.out.println("ERROR in evaluate: Unrecognized bif2 " + this.info);
                     return -1;
@@ -742,7 +764,7 @@ public class Node {
         */
 
         else {
-            error("Unknown node kind [" + kind + "]");
+            error("Unknown node kind in evaluate [" + kind + "]");
             return 0;
         }
 
