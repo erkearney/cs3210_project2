@@ -207,8 +207,7 @@ public class Node {
                     break;
                 case "input":
                     // TODO implement variable storage
-                    String temp = keys.next();
-                    System.out.println("Temp is " + temp);
+                    this.evaluate();
                     break;
                 default:
                     System.out.println("Unrecognized funcCall");
@@ -273,7 +272,10 @@ public class Node {
         }
         else if ( kind.equals("sto") ) {
             // TODO implement variable storage
-            System.out.println("sto");
+            double value = this.first.evaluate();
+            String varName = this.info;
+            table.store(varName, value);
+            //System.out.println("Stored " + varName + " = " + value);
         }
         else if ( kind.equals("return") ) {
             // TODO implement return
@@ -514,6 +516,10 @@ public class Node {
                 case "nl":
                     System.out.print("\n");
                     return 0;
+                case "input":
+                    // TODO implement a try catch here, if I decide to not be lazy
+                    double value = keys.nextDouble();
+                    return value;
                 default:
                     System.out.println("ERROR in evaluate: Unrecognized bif0: " + this.info);
             }
@@ -618,9 +624,10 @@ public class Node {
             }    
         }
         else if ( kind.equals("var") ) {
-            // TODO implement var
-            System.out.println("For now, all vars are 69");
-            return 69;
+            String varName = this.info;
+            double value = table.retrieve(varName);
+            //System.out.println(varName + " = " + value);
+            return value;
         }
 
         /*
