@@ -9,7 +9,6 @@ x = input()
 print(abs(x))
 nl()
 
-"here"
 return 0
 end
 

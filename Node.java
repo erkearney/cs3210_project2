@@ -434,7 +434,10 @@ public class Node {
             Node checkFunction = funcDefs;
             while ( !found ) {
                 String checkFunctionName = checkFunction.first.info;
-                //System.out.format("Comparing %s to %s\n", functionName, checkFunctionName);
+                //System.out.println("checkFunctionName is " + checkFunctionName + " " + checkFunction);
+                //System.out.println("checkFunction.first is " + checkFunction.first);
+                //System.out.println("checkFunction.second is " + checkFunction.second);
+                //System.out.format("Now comparing %s and %s\n", functionName, checkFunctionName);
                 if ( functionName.equals(checkFunctionName) ) {
                     found = true;
                     // Reset checkFunction to beginning
@@ -454,6 +457,7 @@ public class Node {
                     else {
                         // We've checked all the function definitions,
                         // and didn't find a match.
+                        System.out.format(checkFunction.first.info);
                         System.out.format("ERROR: %s is undefined\n", functionName);
                         System.exit(1);
                     }

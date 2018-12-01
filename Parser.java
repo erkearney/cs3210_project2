@@ -41,8 +41,10 @@ public class Parser {
       Node first = parseFuncDef();
       // Check if there is another funcDef
       Token token = lex.getNextToken();
-      if( token.isKind( "funcDef" ) ) {
-         Node second = parseFuncDef();
+
+      if( token.isKind( "def" ) ) {
+         lex.putBackToken( token );
+         Node second = parseFuncDefs();
          //System.out.println("Finished parsing <funcDefs> -> <funcDef> <funcDefs>");
          return new Node( "funcDefs", first, second, null );
       }
@@ -64,6 +66,7 @@ public class Parser {
       errorCheck( token, "def", "", "funcDef" );
       token = lex.getNextToken();
       String functionName = token.getDetails();
+      //System.out.println("functionName is " + functionName);
       token = lex.getNextToken();
       errorCheck( token, "Single", "(", "funcDef" );
       // Look ahead to see if there are any parameters
@@ -85,7 +88,7 @@ public class Parser {
             Node second = parseStatements();
             token = lex.getNextToken();
             errorCheck( token, "end", "", "funcDef" );
-            lex.putBackToken( token );
+            //lex.putBackToken( token );
             //System.out.println("Finished parsing <funcDef> -> def <var> ( <params> ) <statements> end");
             return new Node( "funcDef", functionName, first, second, null );
          }
