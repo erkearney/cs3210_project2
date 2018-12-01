@@ -107,6 +107,7 @@ public class Parser {
              Node second = parseStatements();
              //System.out.println("Checking for end");
              token = lex.getNextToken();
+             //System.out.println( token );
              errorCheck( token, "end", "", "funcDef" );
              //System.out.println("Finished parsing <funcDef> -> def <var> ( ) <statements> end");
              return new Node( "funcDef", functionName, null, second, null );
@@ -369,8 +370,11 @@ public class Parser {
          }
       }
       else if (token.isKind("return")) {
+         token = lex.getNextToken();
+         //System.out.println( "next token is " + token );
+         lex.putBackToken( token );
          Node first = parseExpr();
-         //System.out.println("Finished parsing <statement> -> return <expr>");
+         //System.out.println("Finished parsing <statement> -> return <expr>, " + first);
          return new Node("return", first, null, null);
       }
       else {
@@ -384,7 +388,6 @@ public class Parser {
 
    private Node parseExpr() {
       //System.out.println("-----> parsing <expr>");
-
       Node first = parseTerm();
 
       // look ahead to see if there's an addop
@@ -398,7 +401,7 @@ public class Parser {
       }
       else {// is just one term
          lex.putBackToken( token );
-         //System.out.println("Finished parsing <expr> -> <term>");
+         //System.out.println("Finished parsing <expr> -> <term>, with first = " + first);
          return new Node( "expr", "term", first, null, null );
       }
 
@@ -406,7 +409,6 @@ public class Parser {
 
    private Node parseTerm() {
       //System.out.println("-----> parsing <term>");
-
       Node first = parseFactor();
 
       // look ahead to see if there's a multop
@@ -422,7 +424,7 @@ public class Parser {
       else {// is just one factor
          lex.putBackToken( token );
          //System.out.println("Finished parsing <term> -> <factor>");
-         return new Node( "factor", first, null, null );
+         return new Node( "term", "factor", first, null, null );
       }
       
    }// <term>
@@ -431,10 +433,12 @@ public class Parser {
       //System.out.println("-----> parsing <factor>");
 
       Token token = lex.getNextToken();
-      //System.out.println("Token: " + token);
+      //System.out.println("Token in factor: " + token);
 
       if ( token.isKind("num") ) {
+         //lex.putBackToken( token );
          //System.out.println("Finished parsing <factor> -> <num>");
+         //System.out.println("factor " + token.getDetails() );
          return new Node("num", token.getDetails(), null, null, null );
       }
       else if ( token.isKind("var") ) {
@@ -454,8 +458,11 @@ public class Parser {
          }
          else {
             lex.putBackToken( token );
+            token = temp;
             //System.out.println("Finished parsing <factor> -> <var>");
-            return new Node("factor", token.getDetails(), null, null, null);
+            //System.out.println("token is " + token.getDetails());
+            // TODO maybe re-implement the var node
+            return new Node("var", token.getDetails(), null, null, null);
          }
       }
       else if ( token.matches("Single","(") ) {

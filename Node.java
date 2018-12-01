@@ -149,7 +149,7 @@ public class Node {
         if ( kind.equals("program") ) {
            // <program> -> <funcCall> | <funcCall> <funcDefs>
            if ( first == null ) {
-              System.out.println("A Corgi program must have at least one function call");
+              error("A Corgi program must have at least one function call");
               System.exit(1);
            }
            else if ( second == null ) {
@@ -177,7 +177,7 @@ public class Node {
                 statements.execute();
             }
             else {
-                System.out.println("No statements found");
+                System.out.println("WARING no statements found in " + this.info);
             }
         }
         else if ( kind.equals("funcCall" ) ) {
@@ -194,9 +194,9 @@ public class Node {
                     args = this.first.first;
                     // print is a bif 1
                     if ( args.first == null ) {
-                        System.out.println("ERROR: print takes 1 argument, use nl() to print an empty line");    
+                        error("ERROR: print takes 1 argument, use nl() to print an empty line");    
                     } else if ( args.second != null ) {
-                        System.out.println("ERROR: print takes only 1 argument");    
+                        error("ERROR: print takes only 1 argument");    
                     } else {
                         Node arg = args.first;
                         System.out.print(arg.evaluate());
@@ -272,6 +272,7 @@ public class Node {
             }
         }
         else if ( kind.equals("sto") ) {
+            // TODO implement variable storage
             System.out.println("sto");
         }
         else if ( kind.equals("return") ) {
@@ -472,7 +473,6 @@ public class Node {
         else if ( kind.equals("expr") ) {
             //System.out.println("expr");
             if ( this.info.equals("term") ) {
-                //System.out.println("term " + first.info);
                 return first.evaluate();
             }
             else {
@@ -481,9 +481,25 @@ public class Node {
         }
         else if ( kind.equals("term") ) {
             //System.out.println("term " + this.info);
+            if ( this.info.equals("*") ) {
+                return this.first.evaluate() * this.second.evaluate();
+            }
+            else if ( this.info.equals("/") ) {
+                return this.first.evaluate() / this.second.evaluate();
+            }
+            else if ( this.info.equals("factor") ) {
+                return this.first.evaluate();
+            }
+            else {
+                error("ERROR in term: Unrecognized info");
+            }
         }
         else if ( kind.equals("factor") ) {
-            if (this.second != null) {
+            if ( this.first == null) {
+                System.out.println("factor with " + this.info);
+                return Double.parseDouble(this.info);
+            }
+            else if (this.second != null) {
                 return this.first.evaluate() * -1;    
             }
             else {
@@ -528,6 +544,8 @@ public class Node {
                     return Math.sin(arg1);
                 case "atan":
                     return Math.atan(arg1);
+                case "abs":
+                    return Math.abs(arg1);
                 default:
                     System.out.println("ERROR in evaluate: Unrecognized bi1 " + this.info);
             }
@@ -598,6 +616,11 @@ public class Node {
                     System.out.println("ERROR in evaluate: Unrecognized bif2 " + this.info);
                     return -1;
             }    
+        }
+        else if ( kind.equals("var") ) {
+            // TODO implement var
+            System.out.println("For now, all vars are 69");
+            return 69;
         }
 
         /*
