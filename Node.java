@@ -243,7 +243,7 @@ public class Node {
                 case "input":
                     // TODO implement variable storage
                     String temp = keys.next();
-                    System.out.println("Temp is " + temp);
+                    //System.out.println("Temp is " + temp);
                     break;
                 default:
                     System.out.println("ERROR: Unrecognized bif0: " + this.info);
@@ -447,6 +447,7 @@ public class Node {
                     //System.out.println(checkFunction);
                     //System.out.println(checkFunction.first);
                     checkFunction.first.execute();
+                    return 0;
                 }
                 else {
                     if ( checkFunction.second != null ) {
@@ -471,7 +472,7 @@ public class Node {
             // so we can assume that this args node has only one arg child,
             // feels really sketchy though ...
             if ( this.second != null ) {
-                System.out.println("Fix args");
+                System.out.println("Fix args, ~line 475");
                 return -1;
             }
             return this.first.evaluate();
@@ -483,6 +484,19 @@ public class Node {
             }
             else {
                 // TODO, implement + and -
+                if ( Double.isNaN(this.second.evaluate()) ) {
+                    System.out.println("ERROR when evaluating term, the second child is NaN");
+                    System.out.println(this.second);
+                }
+                else if ( this.info.equals("+") ) {
+                    return this.first.evaluate() + this.second.evaluate();
+                }
+                else if ( this.info.equals("-") ) {
+                    return this.first.evaluate() - this.second.evaluate();
+                }
+                else {
+                    System.out.println("ERROR evaluting expr node");
+                }
             }
         }
         else if ( kind.equals("term") ) {
@@ -501,6 +515,21 @@ public class Node {
             }
         }
         else if ( kind.equals("factor") ) {
+            //System.out.println("factor " + this.info);
+            //System.out.println(this.info);
+            switch(this.info) {
+                case "( expr )":
+                    return this.first.evaluate();
+                case "funcCall":
+                    this.first.execute();
+                    return 0;
+                case "bif":
+                    //System.out.println("factor bif: " + this.first);
+                    return this.first.evaluate();
+                default:
+                    error("ERROR in exexuting factor: Unrecognized factor info: " + this.info);
+            }
+            /*
             if ( this.first == null) {
                 System.out.println("factor with " + this.info);
                 return Double.parseDouble(this.info);
@@ -509,8 +538,10 @@ public class Node {
                 return this.first.evaluate() * -1;    
             }
             else {
+                System.out.println(this);
                 return this.first.evaluate();    
             }
+            */
         }
         else if ( kind.equals("num") ) {
             return Double.parseDouble(this.info);
@@ -547,6 +578,12 @@ public class Node {
                 case "trunc":
                     return Math.floor(arg1);
                 case "sqrt":
+                    if ( arg1 < 0 ) {
+                        System.out.format("Corgi does not support imaginary " +
+                                          "numbers, so it cannot take the " +
+                                          "square root of %f, exiting ...\n", arg1);
+                        System.exit(1);
+                    }
                     return Math.sqrt(arg1);
                 case "cos":
                     return Math.cos(arg1);
@@ -632,6 +669,10 @@ public class Node {
             double value = table.retrieve(varName);
             //System.out.println(varName + " = " + value);
             return value;
+        }
+        else if ( kind.equals("opp") ) {
+            double arg = this.first.evaluate();
+            return arg * -1;
         }
 
         /*
@@ -803,6 +844,7 @@ public class Node {
         }
 
         // TODO hopefully remove this
+        System.out.println("Something went wrong in Node");
         return -1337;
     }// evaluate
 

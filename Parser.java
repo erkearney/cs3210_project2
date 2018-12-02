@@ -461,7 +461,7 @@ public class Parser {
             lex.putBackToken( temp );
             Node first = parseFuncCall();
             //System.out.println("Finished parsing <factor> -> <funcCall>");
-            return new Node("factor", first, null, null);
+            return new Node("factor", "funcCall", first, null, null);
          }
          else {
             lex.putBackToken( token );
@@ -476,7 +476,7 @@ public class Parser {
          Node first = parseExpr();
          token = lex.getNextToken();
          errorCheck( token, "Single", ")", "factor" );
-         return new Node("factor", first, null, null);
+         return new Node("factor", "( expr )", first, null, null);
       }
       else if ( token.isKind("bif0" ) ||
                 token.isKind("bif1" ) ||
@@ -484,7 +484,7 @@ public class Parser {
           lex.putBackToken( token );
           Node first = parseFuncCall();
           //System.out.println("Finished parsing <factor> -> <funcCall> (bif)");
-          return new Node("factor", first, null, null);
+          return new Node("factor", "bif", first, null, null);
       }
       /*
       else if ( token.isKind("bif0") ) {
