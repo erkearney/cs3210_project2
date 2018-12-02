@@ -21,6 +21,8 @@ public class Node {
                                   // of the called functions' funcDef node, 
                                   // which will be of type args
 
+    private static double retval;   // Holds the return value of called functions
+
     private String kind;  // non-terminal or terminal category for the node
     private String info;  // extra information about the node such as
     // the actual identifier for an I
@@ -168,6 +170,8 @@ public class Node {
 
             Node params = this.first;
             //System.out.println(params);
+            //System.out.println(params.info);
+            //table.store(params.info, 0);
             // TODO take care of arguments
 
             Node statements = second;
@@ -199,6 +203,8 @@ public class Node {
                         error("ERROR: print takes only 1 argument");    
                     } else {
                         Node arg = args.first;
+                        //System.out.println(arg);
+                        //System.out.print("print arg evaulates to " + arg.evaluate());
                         System.out.print(arg.evaluate());
                     }
                     break;
@@ -210,7 +216,8 @@ public class Node {
                     this.evaluate();
                     break;
                 default:
-                    System.out.println("Unrecognized funcCall");
+                    // May be a user-defined function
+                    this.evaluate();
             }
         }
         else if ( kind.equals("stmts") ) {
@@ -280,6 +287,7 @@ public class Node {
         else if ( kind.equals("return") ) {
             // TODO implement return
             //System.out.println("Got return");
+            retval = this.evaluate();
         }
 
 
@@ -406,10 +414,12 @@ public class Node {
 
         else if ( kind.equals("cond")) {
             double value = first.evaluate();
-            if(value > 0 || value < 0) {
+            if(value != 0) {
+                //System.out.println("Condition is true");
                 second.execute();
             }
             else {
+                //System.out.println("Condition is false");
                 third.execute();
             }
         }
@@ -425,7 +435,7 @@ public class Node {
 
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
-            //System.out.println(this.info);
+            //System.out.println("functionName is " + functionName);
 
             boolean found = false;
             // funcDefs starts out as the first funcDefs Node created by Parser
@@ -440,14 +450,15 @@ public class Node {
                 //System.out.format("Now comparing %s and %s\n", functionName, checkFunctionName);
                 if ( functionName.equals(checkFunctionName) ) {
                     found = true;
-                    // Reset checkFunction to beginning
-                    checkFunction = funcDefs;
                     //System.out.println("Found " + checkFunctionName);
                     //System.out.println(this);
                     //System.out.println(checkFunction);
                     //System.out.println(checkFunction.first);
+                    //System.out.println("Executing " + checkFunction.first.info);
                     checkFunction.first.execute();
-                    return 0;
+                    // Reset checkFunction to beginning
+                    checkFunction = funcDefs;
+                    return retval;
                 }
                 else {
                     if ( checkFunction.second != null ) {
@@ -475,10 +486,10 @@ public class Node {
                 System.out.println("Fix args, ~line 475");
                 return -1;
             }
+            System.out.println(this.info);
             return this.first.evaluate();
         }
         else if ( kind.equals("expr") ) {
-            //System.out.println("expr");
             if ( this.info.equals("term") ) {
                 return first.evaluate();
             }
@@ -500,7 +511,7 @@ public class Node {
             }
         }
         else if ( kind.equals("term") ) {
-            //System.out.println("term " + this.info);
+            //System.out.println("term " + this + " " + this.info);
             if ( this.info.equals("*") ) {
                 return this.first.evaluate() * this.second.evaluate();
             }
@@ -515,14 +526,16 @@ public class Node {
             }
         }
         else if ( kind.equals("factor") ) {
-            //System.out.println("factor " + this.info);
-            //System.out.println(this.info);
+            //System.out.println("factor " + this);
             switch(this.info) {
                 case "( expr )":
                     return this.first.evaluate();
                 case "funcCall":
+                    return this.first.evaluate();
+                    /*
                     this.first.execute();
-                    return 0;
+                    return 500;
+                    */
                 case "bif":
                     //System.out.println("factor bif: " + this.first);
                     return this.first.evaluate();
@@ -673,6 +686,11 @@ public class Node {
         else if ( kind.equals("opp") ) {
             double arg = this.first.evaluate();
             return arg * -1;
+        }
+        else if ( kind.equals("return") ) {
+            //System.out.println("returning " + this.first.evaluate());
+            retval = this.first.evaluate();
+            return this.first.evaluate();
         }
 
         /*
@@ -843,7 +861,6 @@ public class Node {
             return 0;
         }
 
-        // TODO hopefully remove this
         System.out.println("Something went wrong in Node");
         return -1337;
     }// evaluate

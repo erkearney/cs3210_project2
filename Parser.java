@@ -342,7 +342,7 @@ public class Parser {
             token = lex.getNextToken();
             if( token.isKind( " end " ) ) {
                 //System.out.println("Finished parsing <statement> -> if <expr> else end");
-                return new Node("cond", first, null, null);
+                return new Node("cond", "if <expr> else end", first, null, null);
             }
             else {
                 Node third = parseStatements();
@@ -350,7 +350,7 @@ public class Parser {
                 token = lex.getNextToken();
                 errorCheck(token, "end", "statemement" );
                 //System.out.println("Finished parsing <statement> -> if <expr> else <statements> end");
-                return new Node("cond", first, null, third);
+                return new Node("cond", "if <expr> else <statements> end",first, null, third);
             }
          }
          else {
@@ -363,7 +363,7 @@ public class Parser {
             token = lex.getNextToken();
             if ( token.isKind( "end" ) ) {
                 //System.out.println("Finished parsing <statement> -> if <expr> <statements> else end");
-                return new Node("cond", first, second, null);
+                return new Node("cond", "if <expr> <statements>, else end", first, second, null);
             }
             else {
                 lex.putBackToken(token);
@@ -372,7 +372,7 @@ public class Parser {
                 token = lex.getNextToken();
                 errorCheck(token, "end", "statement" );
                 //System.out.println("Finished parsing <statement> -> if <expr> <statements> else <statements> end");
-                return new Node("cond", first, second, third);
+                return new Node("cond", "if <expr> <statements> else <statements> end", first, second, third);
             }
          }
       }
