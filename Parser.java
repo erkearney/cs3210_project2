@@ -75,8 +75,8 @@ public class Parser {
          //System.out.println("There are params");
          lex.putBackToken(token);
          Node first = parseParams();
-         token = lex.getNextToken();
-         errorCheck( token, "Single", ")", "funcDef" );
+         //token = lex.getNextToken();
+         //errorCheck( token, "Single", ")", "funcDef" );
          // Look ahead again to see if there are any statements
          token = lex.getNextToken();
          if ( token.isKind("end") ) {
@@ -125,17 +125,21 @@ public class Parser {
       String firstVar = token.getDetails();
       // Look ahead for more vars
       token = lex.getNextToken();
-      if( token.isKind( "var" ) ) {
+      if ( token.matches( "Single", ",") ) {
          // <params> -> <var>, <params>    
-         lex.putBackToken( token );
+         //lex.putBackToken( token );
          Node first = parseParams();
          //System.out.println("Finished parsing <params> -> <var>, <params>");
          return new Node("params", firstVar, first, null, null);
       }
-      else {
-         lex.putBackToken( token );
+      else if ( token.matches( "Single", ")") ) {
          //System.out.println("Finished parsing <params> -> <var>");
          return new Node("params", firstVar, null, null, null);
+      }
+      else {
+         System.out.println("ERROR in parseParams()");
+         System.exit(1);
+         return new Node("ERROR", null, null, null);
       }
    } // <params>
 
