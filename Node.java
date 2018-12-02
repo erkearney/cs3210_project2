@@ -203,8 +203,6 @@ public class Node {
                         error("ERROR: print takes only 1 argument");    
                     } else {
                         Node arg = args.first;
-                        //System.out.println(arg);
-                        //System.out.print("print arg evaulates to " + arg.evaluate());
                         System.out.print(arg.evaluate());
                     }
                     break;
@@ -212,7 +210,6 @@ public class Node {
                     System.out.print("\n");
                     break;
                 case "input":
-                    // TODO implement variable storage
                     this.evaluate();
                     break;
                 default:
@@ -263,7 +260,7 @@ public class Node {
                 case "print":
                     //System.out.println("Print first type: " + this.first.kind);
                     double writeString = this.first.evaluate();
-                    System.out.println(writeString);
+                    System.out.print(writeString);
             }
 
         }
@@ -289,124 +286,6 @@ public class Node {
             //System.out.println("Got return");
             retval = this.evaluate();
         }
-
-
-        /* ********************************* */
-        /*
-        else if ( kind.equals("stmts") ) {
-            if ( first != null ) {
-                first.execute();
-                if ( second != null ) {
-                    second.execute();
-                }
-            }
-        }
-
-        else if ( kind.equals("prtexp") ) {
-            double value = first.evaluate();
-            System.out.print( value );
-        }
-
-
-        else if ( kind.equals("nl") ) {
-            System.out.print( "\n" );
-        }
-
-        else if ( kind.equals("sto") ) {
-            double value = first.evaluate();
-            table.store( info, value );
-        }
-
-        else if ( kind.equals("lt") ) {
-            double value = first.evaluate();
-            table.store( info, value );
-        }
-
-        else if ( kind.equals("le") ) {
-            double value = first.evaluate();
-            table.store( info, value );
-        }
-
-        else if ( kind.equals("eq") ) {
-            double value = first.evaluate();
-            table.store( info, value );
-        }
-
-        else if (kind.equals("ne") ) {
-            double value = first.evaluate();
-            table.store( info, value );
-        }
-
-        else if (kind.equals("funcDefs")) {
-            if ( first != null ) {
-                first.execute();
-                if ( second != null ) {
-                    second.execute();
-                }
-            }
-        }
-        */
-
-        /*
-        else if (kind.equals("funcCall")) {
-            if (first != null) {
-                //System.out.println("Executing " + first);
-                first.execute();
-                if (second != null) {
-                    //System.out.println("Executing " + second);
-                    second.execute();
-                }
-            }
-        }
-
-        else if (kind.equals("param")) {
-            if (first != null) {
-                first.execute();
-                if (second != null) {
-                    second.execute();
-                }
-            }
-        }
-
-        else if (kind.equals("funcDef")) {
-            if (first != null) {
-                first.execute();
-                if (second != null) {
-                    second.execute();
-                    if (third != null) {
-                        third.execute();
-                    }
-                }
-            }
-        }
-        //TODO: Check if this is right
-        else if (kind.equals("sto")) {
-            double value = first.evaluate();
-            table.store(info, value);
-        }
-
-        else if (kind.equals("args")) {
-            if (first != null) {
-                first.execute();
-                if (second != null) {
-                    second.execute();
-                }
-            }
-        }
-
-        else if ( kind.equals("expr") ) {
-            double value = this.evaluate();
-            table.store(info, value);
-        }
-        */
-
-        /*
-        else if ( kind.equals("term") ) {
-            double value = this.evaluate();
-            table.store(info, value);
-        }
-        */
-
         else if ( kind.equals("num")) {
             double value = this.evaluate();
             table.store(info, value);
@@ -444,17 +323,8 @@ public class Node {
             Node checkFunction = funcDefs;
             while ( !found ) {
                 String checkFunctionName = checkFunction.first.info;
-                //System.out.println("checkFunctionName is " + checkFunctionName + " " + checkFunction);
-                //System.out.println("checkFunction.first is " + checkFunction.first);
-                //System.out.println("checkFunction.second is " + checkFunction.second);
-                //System.out.format("Now comparing %s and %s\n", functionName, checkFunctionName);
                 if ( functionName.equals(checkFunctionName) ) {
                     found = true;
-                    //System.out.println("Found " + checkFunctionName);
-                    //System.out.println(this);
-                    //System.out.println(checkFunction);
-                    //System.out.println(checkFunction.first);
-                    //System.out.println("Executing " + checkFunction.first.info);
                     checkFunction.first.execute();
                     // Reset checkFunction to beginning
                     checkFunction = funcDefs;
@@ -494,7 +364,6 @@ public class Node {
                 return first.evaluate();
             }
             else {
-                // TODO, implement + and -
                 if ( Double.isNaN(this.second.evaluate()) ) {
                     System.out.println("ERROR when evaluating term, the second child is NaN");
                     System.out.println(this.second);
@@ -532,29 +401,12 @@ public class Node {
                     return this.first.evaluate();
                 case "funcCall":
                     return this.first.evaluate();
-                    /*
-                    this.first.execute();
-                    return 500;
-                    */
                 case "bif":
                     //System.out.println("factor bif: " + this.first);
                     return this.first.evaluate();
                 default:
                     error("ERROR in exexuting factor: Unrecognized factor info: " + this.info);
             }
-            /*
-            if ( this.first == null) {
-                System.out.println("factor with " + this.info);
-                return Double.parseDouble(this.info);
-            }
-            else if (this.second != null) {
-                return this.first.evaluate() * -1;    
-            }
-            else {
-                System.out.println(this);
-                return this.first.evaluate();    
-            }
-            */
         }
         else if ( kind.equals("num") ) {
             return Double.parseDouble(this.info);
@@ -618,56 +470,44 @@ public class Node {
             switch (this.info) {
                 case "lt":
                     if ( arg1 < arg2 ) {
-                        //System.out.println(arg1 + " is less than " + arg2);
                         return 1;
                     }
                     else {
-                        //System.out.println(arg1 + " is not less than " + arg2);
                         return 0;
                     }
                 case "le":
                     if ( arg1 <= arg2 ) {
-                        //System.out.println(arg1 + " is less than or equal to " + arg2);
                         return 1;
                     }
                     else {
-                        //System.out.println(arg1 + " is not less than or equal to " + arg2);
                         return 0;
                     }
                 case "eq":
                     if ( arg1 == arg2 ) {
-                        //System.out.println(arg1 + " is equal to " + arg2);
                         return 1;
                     }
                     else {
-                        //System.out.println(arg1 + " is not equal to " + arg2);
                         return 0;
                     }
                 case "ne":
                     if ( arg1 != arg2 ) {
-                        //System.out.println(arg1 + " is not equal to " + arg2);
                         return 1;
                     }
                     else {
-                        //System.out.println(arg2 + " is equal to " + arg2);
                         return 0;
                     }
                 case "or":
                     if ( arg1 != 0 || arg2 != 0 ) {
-                        //System.out.println(arg1 + " or " + arg2 + " is not 0");
                         return 1;
                     }
                     else {
-                        //System.out.println(arg1 + " and " + arg2 + " are both 0");    
                         return 0;
                     }
                 case "and":
                     if ( arg1 != 0 && arg2 != 0 ) {
-                       //System.out.println(arg1 + " and " + arg2 + " are both not 0");
                        return 1;
                     }
                     else {
-                        //System.out.println(arg1 + " or " + arg2 + " are 0");
                         return 0;
                     }
                 case "pow":
@@ -690,172 +530,8 @@ public class Node {
         else if ( kind.equals("return") ) {
             //System.out.println("returning " + this.first.evaluate());
             retval = this.first.evaluate();
-            return this.first.evaluate();
+            return retval;
         }
-
-        /*
-        else if ( kind.equals("bif0") ) {
-            switch (this.info) {
-                case ("nl"):
-                    this.execute();
-                    break;
-                case ("input"):
-                    // TODO implement variable storage on input
-                    //String temp = keys.next();
-                    this.execute();
-                    break;
-                default:
-                    System.out.println("ERROR: " + this.info + " was not recognized as a bif0");
-                    System.exit(1);
-            }    
-        }
-        else if ( kind.equals("bif1") ) {
-                
-        }
-        else if ( kind.equals("bif2") ) {
-            args = this.first;
-            double arg1 = args.first.evaluate();
-            args = args.second;
-            double arg2 = args.first.evaluate();
-            switch (this.info) {
-                case "lt":    
-                    if ( arg1 < arg2 ) {
-                        return 1;    
-                    } else {
-                        return 0;    
-                    }
-                default:
-                    System.out.println("ERROR: " + this.info + " was not recognized as a bif2");
-            }
-        }
-        */
-        // TODO implement the other bif1s
-        /*
-        else if ( kind.equals("bif1") ) {
-            if ( info.equals("print") ) {
-                System.out.println(first.evaluate());
-                return 0;
-            }
-            else {
-                System.out.format("ERROR: For some reason I thought %s was a "
-                                   + "bif1, maybe parser messed up?\n", this.info);
-                System.exit(1);
-            }
-        }
-        // TODO implement the other bif2s
-        else if ( kind.equals("bif2") ) {
-            if ( info.equals("le") ) {
-                //System.out.println("le");
-                // first <= second
-                double x = first.evaluate();
-                double y = first.evaluate();
-                if ( x <= y ) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            } 
-        }
-        */
-        /* ******************** */
-        /*
-        else if ( kind.equals("num") ) {
-            return Double.parseDouble( info );
-        }
-
-        else if ( kind.equals("var") ) {
-            return table.retrieve( info );
-        }
-
-        else if ( kind.equals("+") || kind.equals("-") ) {
-            double value1 = first.evaluate();
-            double value2 = second.evaluate();
-            if ( kind.equals("+") )
-                return value1 + value2;
-            else
-                return value1 - value2;
-        }
-
-        else if ( kind.equals("*") || kind.equals("/") ) {
-            double value1 = first.evaluate();
-            double value2 = second.evaluate();
-            if ( kind.equals("*") )
-                return value1 * value2;
-            else
-                return value1 / value2;
-        }
-
-        else if ( kind.equals("input") ) {
-            return keys.nextDouble();
-        }
-
-        else if ( kind.equals("sqrt") || kind.equals("cos") ||
-                kind.equals("sin") || kind.equals("atan")
-                ) {
-            double value = first.evaluate();
-
-            if ( kind.equals("sqrt") )
-                return Math.sqrt(value);
-            else if ( kind.equals("cos") )
-                return Math.cos( Math.toRadians( value ) );
-            else if ( kind.equals("sin") )
-                return Math.sin( Math.toRadians( value ) );
-            else if ( kind.equals("atan") )
-                return Math.toDegrees( Math.atan( value ) );
-            else {
-                error("unknown function name [" + kind + "]");
-                return 0;
-            }
-
-        }
-
-        else if ( kind.equals("pow") ) {
-            double value1 = first.evaluate();
-            double value2 = second.evaluate();
-            return Math.pow( value1, value2 );
-        }
-
-        else if ( kind.equals("opp") ) {
-            double value = first.evaluate();
-            return -value;
-        }
-
-        else if ( kind.equals("lt") ) {
-            double value1 = first.evaluate();
-            double value2 = second.evaluate();
-            if (value1 < value2) {
-                return 1;
-            }
-            return 0;
-        }
-
-        else if ( kind.equals("le") ) {
-            double value1 = first.evaluate();
-            double value2 = second.evaluate();
-            if (value1 <= value2) {
-                return 1;
-            }
-            return 0;
-        }
-        else if ( kind.equals("eq") ) {
-            double value1 = first.evaluate();
-            double value2 = second.evaluate();
-            if (value1 == value2) {
-                return 1;
-            }
-            return 0;
-        }
-
-        else if ( kind.equals("ne") ) {
-            double value1 = first.evaluate();
-            double value2 = second.evaluate();
-            if (value1 != value2) {
-                return 1;
-            }
-            return 0;
-        }
-        */
-
         else {
             error("Unknown node kind in evaluate [" + kind + "]");
             return 0;
