@@ -214,6 +214,8 @@ public class Node {
             System.out.println(this.first);
             System.out.println(this.second);
             */
+            
+            /*
             if ( this.first != null ) {
                Node params = this.first;
                for (int i = 0; i < paramNames.length; i++) {
@@ -229,6 +231,7 @@ public class Node {
                    System.out.println(name);
                }
             }
+            */
 
             String functionName = this.first.info;
             switch (functionName) {
@@ -354,9 +357,9 @@ public class Node {
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
             //System.out.println("functionName is " + functionName);
+            /*
             if ( this.first != null ) {
                 Node params = this.first;
-                /*
                 System.out.println("params are: " + params);
                 if ( params.first != null ) {
                     System.out.println("first is " + params.first);
@@ -368,8 +371,8 @@ public class Node {
                     System.out.println("second's info is: " + params.first.info);
                     System.out.println("second evaluates to " + params.second.evaluate());
                 }
-                */
             }
+            */
 
             boolean found = false;
             // funcDefs starts out as the first funcDefs Node created by Parser
@@ -405,17 +408,13 @@ public class Node {
         else if ( kind.equals("args") ) {
             //System.out.println("args: " + this);    
 
-            /*
-            // TODO I *think* we should only get here if called from print,
-            // so we can assume that this args node has only one arg child,
-            // feels really sketchy though ...
+            // TODO take another look at args
             if ( this.second != null ) {
                 System.out.println("Fix args, ~line 475");
                 return -1;
             }
-            System.out.println(this.info);
+            //System.out.println(this.info);
             return this.first.evaluate();
-            */
         }
         else if ( kind.equals("expr") ) {
             if ( this.info.equals("term") ) {
@@ -592,7 +591,6 @@ public class Node {
         }
         else {
             error("Unknown node kind in evaluate [" + kind + "]");
-            return 0;
         }
 
         System.out.println("Something went wrong in Node");
