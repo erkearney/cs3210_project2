@@ -26,6 +26,7 @@ public class Node {
     private String kind;  // non-terminal or terminal category for the node
     private String info;  // extra information about the node such as
     // the actual identifier for an I
+    private String[] paramNames = new String[10];     // Used to store the names of the arguments of user-defined functions
 
     // references to children in the parse tree
     private Node first, second, third;
@@ -169,12 +170,27 @@ public class Node {
             //System.out.println("funcDef: Executing " + this.info);
 
             Node params = this.first;
-            //System.out.println(params);
-            //System.out.println(params.info);
-            //table.store(params.info, 0);
-            // TODO take care of arguments
+            if ( params == null ) {
+                //System.out.println("function: " + this.info + " has no parameters");
+            }
+            else {
+                //System.out.println("params: " + params);
+                // TODO take care of arguments
+                //System.out.println(params.info);
+                //table.store(params.info, 0);
+                for ( int i = 0; i < paramNames.length; i++ ) {
+                    if ( params.first == null ) {
+                        break;
+                    }
+                    else {
+                        paramNames[i] = params.first.info;
+                        System.out.println("Stored paramName: " + paramNames[i]);
+                        params = params.second;
+                    }
+                }
+            }
 
-            Node statements = second;
+            Node statements = this.second;
             //System.out.println(statements);
             if ( statements != null ) {
                 //System.out.println("Executing statements");
@@ -186,10 +202,33 @@ public class Node {
         }
         else if ( kind.equals("funcCall" ) ) {
             /*
+            if ( this.first != null ) {
+                if ( this.kind.equals("var") ) {
+                   table.store(this.first.info, this.first.evaluate()); 
+                   System.out.println("Changed the value of " + this.info + " to " + this.first.evaluate());
+                }
+            }
+            */
+            /*
             System.out.println(this);    
             System.out.println(this.first);
             System.out.println(this.second);
             */
+            if ( this.first != null ) {
+               Node params = this.first;
+               for (int i = 0; i < paramNames.length; i++) {
+                  paramNames[i] = params.first.info;
+                  System.out.println("Set paramNames[" + i + "] to " + params.first.evaluate());
+                  if ( params.second ==  null ) {
+                       break;
+                  }
+                  params = params.second;
+               }
+               System.out.println("paramNames are:");
+               for (String name : paramNames) {
+                   System.out.println(name);
+               }
+            }
 
             String functionName = this.first.info;
             switch (functionName) {
@@ -214,7 +253,7 @@ public class Node {
                     break;
                 default:
                     // May be a user-defined function
-                    this.evaluate();
+                    this.first.execute();
             }
         }
         else if ( kind.equals("stmts") ) {
@@ -315,6 +354,22 @@ public class Node {
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
             //System.out.println("functionName is " + functionName);
+            if ( this.first != null ) {
+                Node params = this.first;
+                /*
+                System.out.println("params are: " + params);
+                if ( params.first != null ) {
+                    System.out.println("first is " + params.first);
+                    System.out.println("first's info is: " + params.first.info);
+                    System.out.println("first evaluates to " + params.first.evaluate());
+                }
+                if ( params.second != null ) {
+                    System.out.println("second is " + params.second);
+                    System.out.println("second's info is: " + params.first.info);
+                    System.out.println("second evaluates to " + params.second.evaluate());
+                }
+                */
+            }
 
             boolean found = false;
             // funcDefs starts out as the first funcDefs Node created by Parser
@@ -349,6 +404,8 @@ public class Node {
         }
         else if ( kind.equals("args") ) {
             //System.out.println("args: " + this);    
+
+            /*
             // TODO I *think* we should only get here if called from print,
             // so we can assume that this args node has only one arg child,
             // feels really sketchy though ...
@@ -358,6 +415,7 @@ public class Node {
             }
             System.out.println(this.info);
             return this.first.evaluate();
+            */
         }
         else if ( kind.equals("expr") ) {
             if ( this.info.equals("term") ) {

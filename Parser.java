@@ -71,6 +71,7 @@ public class Parser {
       errorCheck( token, "Single", "(", "funcDef" );
       // Look ahead to see if there are any parameters
       token = lex.getNextToken();
+      //System.out.println("token that should be var is " + token);
       if( token.isKind("var") ) {
          //System.out.println("There are params");
          lex.putBackToken(token);
@@ -80,7 +81,7 @@ public class Parser {
          // Look ahead again to see if there are any statements
          token = lex.getNextToken();
          if ( token.isKind("end") ) {
-            //System.out.println("Finished parsing <funcDef> -> def <var> ( <params> ) end");
+            //System.out.println("Finished parsing <funcDef> -> def <var> " + functionName + " ( <params> ) end");
             return new Node( "funcDef", functionName, first, null, null );
          }
          else {
@@ -89,7 +90,7 @@ public class Parser {
             token = lex.getNextToken();
             errorCheck( token, "end", "", "funcDef" );
             //lex.putBackToken( token );
-            //System.out.println("Finished parsing <funcDef> -> def <var> ( <params> ) <statements> end");
+            //System.out.println("Finished parsing <funcDef> -> def <var> " + functionName + " ( <params> ) <statements> end");
             return new Node( "funcDef", functionName, first, second, null );
          }
       }
@@ -102,7 +103,7 @@ public class Parser {
          if ( token.isKind("end") ) {
              //System.out.println("There are no more statements");
              errorCheck( token, "end", "", "funcDef" );
-             //System.out.println("Finished parsing <funcDef> -> def <var> ( ) end");
+             //System.out.println("Finished parsing <funcDef> -> def <var> " + functionName + "  ( ) end");
              return new Node( "funcDef", functionName, null, null, null );
          }
          else {
@@ -112,7 +113,7 @@ public class Parser {
              token = lex.getNextToken();
              //System.out.println( token );
              errorCheck( token, "end", "", "funcDef" );
-             //System.out.println("Finished parsing <funcDef> -> def <var> ( ) <statements> end");
+             //System.out.println("Finished parsing <funcDef> -> def <var> " + functionName + " ( ) <statements> end");
              return new Node( "funcDef", functionName, null, second, null );
          }
       }
