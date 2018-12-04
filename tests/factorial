@@ -6,6 +6,9 @@ def fact( n )
       return 1
    else
       temp = fact( n-1 )
+      "n * temp" nl()
+      "n is " print(n) nl()
+      "temp is " print(temp) nl()
       return n * temp
    end
 

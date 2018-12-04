@@ -1,4 +1,11 @@
 cs3210_project2
+
+There are 2 problems right now: funcCalls being used as arguments of funcCalls
+is not working, and there may be a problem is parser causing two args to
+be parsed as just one arg.
+
+The other problem is parameter values are being overwritten in function calls.
+
 If you actually read this tell me in Slack.
 
 How evaluating funcCall works:

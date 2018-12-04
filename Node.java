@@ -27,6 +27,7 @@ public class Node {
     private String info;  // extra information about the node such as
     // the actual identifier for an I
     private String[] paramNames = new String[10];     // Used to store the names of the arguments of user-defined functions
+    //private double[] paramValues = new double[10];      // Used to store the values of the arguments of user-defined functions when those functions are called
 
     // references to children in the parse tree
     private Node first, second, third;
@@ -375,6 +376,8 @@ public class Node {
                                 if ( paramName != null ) {
                                     table.store(paramName, paramValue);
                                 }
+                                //this.paramValues[i] = paramValue;
+                                //System.out.println("paramValues[" + i + "] set to " + paramValue);
                                 //double test = table.retrieve(paramName);
                                 //System.out.println("Test is " + test);
                                 break;
@@ -522,14 +525,18 @@ public class Node {
             }
         }
         else if ( kind.equals("bif2") ) {
-            System.out.println("this.info: " + this.info);
+            //System.out.println("bif2 this.info: " + this.info);
             args = this.first;
             double arg1 = args.first.evaluate();
-            System.out.println("arg1: " + arg1);
+            //System.out.println("arg1: " + arg1);
             args = args.second;
-            System.out.println("second args in " + this.info + ": " + args);
+            //System.out.println("second args in " + this.info + ": " + args);
+            if ( args == null ) {
+                System.out.println("ERROR, bif2: " + this.info + " could not find its second argument!");    
+                return -1;
+            }
             double arg2 = args.first.evaluate();
-            System.out.println("arg2: " + arg2);
+            //System.out.println("arg2: " + arg2);
             switch (this.info) {
                 case "lt":
                     if ( arg1 < arg2 ) {
@@ -591,7 +598,8 @@ public class Node {
             return arg * -1;
         }
         else if ( kind.equals("return") ) {
-            System.out.println("returning " + this.first.evaluate());
+            //System.out.println("returning " + this.first.evaluate());
+            //System.out.println("return first type: " + this.first);
             retval = this.first.evaluate();
             return retval;
         }
