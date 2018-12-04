@@ -171,21 +171,21 @@ public class Node {
 
             Node params = this.first;
             if ( params == null ) {
-                //System.out.println("function: " + this.info + " has no parameters");
+                System.out.println("function: " + this.info + " has no parameters");
             }
             else {
-                //System.out.println("params: " + params);
-                // TODO take care of arguments
-                //System.out.println(params.info);
-                //table.store(params.info, 0);
-                for ( int i = 0; i < paramNames.length; i++ ) {
+                System.out.println("params: " + params);
+                // Store the params in the paramNames array
+                for (int i = 0; i < paramNames.length; i++ ) {
                     if ( params.first == null ) {
+                        paramNames[i] = params.info;
+                        System.out.println("Last param was " + paramNames[i]);
                         break;
                     }
                     else {
-                        paramNames[i] = params.first.info;
-                        System.out.println("Stored paramName: " + paramNames[i]);
-                        params = params.second;
+                        paramNames[i] = params.info;
+                        System.out.println("Added " + paramNames[i] + " to paramNames");
+                        params = params.first;
                     }
                 }
             }
@@ -201,39 +201,11 @@ public class Node {
             }
         }
         else if ( kind.equals("funcCall" ) ) {
-            /*
-            if ( this.first != null ) {
-                if ( this.kind.equals("var") ) {
-                   table.store(this.first.info, this.first.evaluate()); 
-                   System.out.println("Changed the value of " + this.info + " to " + this.first.evaluate());
-                }
-            }
-            */
-            /*
-            System.out.println(this);    
-            System.out.println(this.first);
-            System.out.println(this.second);
-            */
-            
-            /*
-            if ( this.first != null ) {
-               Node params = this.first;
-               for (int i = 0; i < paramNames.length; i++) {
-                  paramNames[i] = params.first.info;
-                  System.out.println("Set paramNames[" + i + "] to " + params.first.evaluate());
-                  if ( params.second ==  null ) {
-                       break;
-                  }
-                  params = params.second;
-               }
-               System.out.println("paramNames are:");
-               for (String name : paramNames) {
-                   System.out.println(name);
-               }
-            }
-            */
-
             String functionName = this.first.info;
+            Node args = this.first;
+            System.out.println(functionName + " called with " + args);
+            // TODO see if more is needed here.
+
             switch (functionName) {
                 // Check if the called function is a built-in function
                 case "print":
@@ -356,6 +328,7 @@ public class Node {
 
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
+            System.out.println("funcCall: " + this);
             //System.out.println("functionName is " + functionName);
             /*
             if ( this.first != null ) {
@@ -383,6 +356,32 @@ public class Node {
                 String checkFunctionName = checkFunction.first.info;
                 if ( functionName.equals(checkFunctionName) ) {
                     found = true;
+
+                    // Find the arguments
+                    if ( this.first != null ) {
+                        Node args = this.first;
+                        for ( int i = 0; i < paramNames.length; i++ ) {
+                            if ( args.first == null ) {
+                                System.out.println("There are no more arguments");
+                                break;
+                            }
+                            else {
+                                double paramValue = args.first.evaluate();
+                                System.out.println(paramValue);
+                                args = args.first;
+                                String paramName = checkFunction.first.paramNames[i];
+                                System.out.println(paramName);
+                                table.store(paramName, paramValue);
+                                //double test = table.retrieve(paramName);
+                                //System.out.println("Test is " + test);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        System.out.println(functionName + " called with no arguments");
+                    }
+
                     checkFunction.first.execute();
                     // Reset checkFunction to beginning
                     checkFunction = funcDefs;
@@ -577,7 +576,7 @@ public class Node {
         else if ( kind.equals("var") ) {
             String varName = this.info;
             double value = table.retrieve(varName);
-            //System.out.println(varName + " = " + value);
+            System.out.println(varName + " = " + value);
             return value;
         }
         else if ( kind.equals("opp") ) {
