@@ -64,7 +64,7 @@ public class MemTable {
      // locate name
      int loc = -1;
      for (int k=0; k<names.size() && loc<0; k++) {
-        System.out.println("MemTable: " + k + " " + names.get(k));
+        //System.out.println("MemTable: " + k + " " + names.get(k));
         if ( names.get(k).equals(name) ) {
            loc = k;
         }

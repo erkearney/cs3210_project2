@@ -174,15 +174,17 @@ public class Node {
                 //System.out.println("function: " + this.info + " has no parameters");
             }
             else {
-                System.out.println("params: " + params);
+                //System.out.println("params: " + params);
                 // Store the params in the paramNames array
                 for (int i = 0; i < paramNames.length; i++ ) {
                     if ( params.first == null ) {
+                        paramNames[i] = params.info;
+                        //System.out.println("The last param was " + paramNames[i]);
                         break;
                     }
                     else {
                         paramNames[i] = params.info;
-                        System.out.println("Added " + paramNames[i] + " to paramNames");
+                        //System.out.println("Added " + paramNames[i] + " to paramNames");
                         params = params.first;
                     }
                 }
@@ -365,12 +367,14 @@ public class Node {
                             }
                             else {
                                 double paramValue = args.first.evaluate();
-                                System.out.println("paramValue: " + paramValue);
+                                //System.out.println("paramValue: " + paramValue);
                                 args = args.first;
                                 // TODO memtable problem caused here.
                                 String paramName = checkFunction.first.paramNames[i];
-                                System.out.println("paramName: " + paramName);
-                                table.store(paramName, paramValue);
+                                //System.out.println("paramName: " + paramName);
+                                if ( paramName != null ) {
+                                    table.store(paramName, paramValue);
+                                }
                                 //double test = table.retrieve(paramName);
                                 //System.out.println("Test is " + test);
                                 break;

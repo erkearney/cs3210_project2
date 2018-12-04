@@ -1,6 +1,0 @@
-main()
-
-def main()
-    "5 < 3? "  print( lt(5,3) ) nl()
-    return 0
-end
