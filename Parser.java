@@ -202,48 +202,19 @@ public class Parser {
            //System.out.println("Finished parsing <funcCall> -> <bif0>");
            return new Node("bif0", functionName, null, null, null);
         }
-        else if ( //token.isKind("sqrt") ||
-                  //token.isKind("cos") ||
-                  //token.isKind("sin") ||
-                  //token.isKind("atan") ||
-                  //token.isKind("print") ||
-                  //token.isKind("round") ||
-                  //token.isKind("trunc") ||
-                  token.isKind("bif1") ) {
-            //String bif1Name = token.getDetails();
+        else if ( token.isKind("bif1") ) {
             token = lex.getNextToken();
             errorCheck(token, "Single", "(", "funcCall" );
-            //lex.putBackToken( token );
             Node first = parseArgs();
-            //Node first = parseExpr();
-            /*
-            token = lex.getNextToken();
-            errorCheck(token, "Single", ")", "funcCall" );
-            */
             //System.out.println("Finished parsing <funcCall> -> <bif1>");
             //System.out.println("Creating a bif1 Node for " + functionName );
             //System.out.println("functionName: " + functionName);
             return new Node("bif1", functionName, first, null, null);
         }
-        else if ( //token.matches("bif2", "pow") ||
-                  //token.matches("bif2", "lt") ||
-                  //token.matches("bif2", "le") ||
-                  //token.matches("bif2", "eq") ||
-                  //token.matches("bif2", "ne") ||
-                  //token.matches("bif2", "or") ||
-                  //token.matches("bif2", "and") ) {
-                  token.isKind("bif2") ) {
-            //String bif2Name = token.getDetails();
+        else if ( token.isKind("bif2") ) {
             token = lex.getNextToken();
             errorCheck( token, "Single", "(", "funcCall" );
             Node first = parseArgs();
-            /*
-            Node first = parseExpr();
-            Node second = parseExpr();
-            //System.out.println("Finished parsing <funcCall> -> <bif2>");
-            return new Node("bif2", token.getDetails(), first, second, null);
-            */
-            //System.out.println("Finished parsing <statements> -> <funcCall> -> <bif2>");
             return new Node("bif2", functionName, first, null, null);
         }
         else if ( token.isKind("var") ) {
@@ -275,10 +246,15 @@ public class Parser {
 
    private Node parseArgs() {
       //System.out.println("-----> parsing <args>");
+      /*
+      Token token = lex.getNextToken();
+      System.out.println("I think " + token.getDetails() + " is an arg");
+      lex.putBackToken( token );
+      */
       Node first = parseExpr();
       // Look for ')'
       Token token = lex.getNextToken();
-      //System.out.println(token);
+      //token = lex.getNextToken();
       if ( token.matches("Single", ")") ) {
          //System.out.println("Finished parsing <args> -> <expr>");
          return new Node("args", first, null, null);
@@ -469,8 +445,7 @@ public class Parser {
             token = temp;
             //System.out.println("Finished parsing <factor> -> <var>");
             //System.out.println("token is " + token.getDetails());
-            // TODO maybe re-implement the var node
-            return new Node("var", token.getDetails(), null, null, null);
+            return new Node( "var", token.getDetails(), null, null, null);
          }
       }
       else if ( token.matches("Single","(") ) {

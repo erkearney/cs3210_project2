@@ -522,10 +522,14 @@ public class Node {
             }
         }
         else if ( kind.equals("bif2") ) {
+            System.out.println("this.info: " + this.info);
             args = this.first;
             double arg1 = args.first.evaluate();
+            System.out.println("arg1: " + arg1);
             args = args.second;
+            System.out.println("second args in " + this.info + ": " + args);
             double arg2 = args.first.evaluate();
+            System.out.println("arg2: " + arg2);
             switch (this.info) {
                 case "lt":
                     if ( arg1 < arg2 ) {
@@ -587,7 +591,7 @@ public class Node {
             return arg * -1;
         }
         else if ( kind.equals("return") ) {
-            //System.out.println("returning " + this.first.evaluate());
+            System.out.println("returning " + this.first.evaluate());
             retval = this.first.evaluate();
             return retval;
         }

@@ -26,7 +26,9 @@ end
 /* ------------------------------------*/
 def findRoot(x)
    h = 0.0000001
-   if lt( abs(f(x)), h*h )
+   y = f(x)
+   z = abs(y)
+   if lt( z, h*h )
       return x
    else
       fx = f(x)
@@ -40,6 +42,7 @@ end
 /*  absolute value function */
 /* ------------------------------------*/
 def abs(x)
+   "here" nl()
    if lt(x,0)
       return -x
    else
