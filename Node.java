@@ -171,15 +171,13 @@ public class Node {
 
             Node params = this.first;
             if ( params == null ) {
-                System.out.println("function: " + this.info + " has no parameters");
+                //System.out.println("function: " + this.info + " has no parameters");
             }
             else {
                 System.out.println("params: " + params);
                 // Store the params in the paramNames array
                 for (int i = 0; i < paramNames.length; i++ ) {
                     if ( params.first == null ) {
-                        paramNames[i] = params.info;
-                        System.out.println("Last param was " + paramNames[i]);
                         break;
                     }
                     else {
@@ -203,7 +201,7 @@ public class Node {
         else if ( kind.equals("funcCall" ) ) {
             String functionName = this.first.info;
             Node args = this.first;
-            System.out.println(functionName + " called with " + args);
+            //System.out.println(functionName + " called with " + args);
             // TODO see if more is needed here.
 
             switch (functionName) {
@@ -328,7 +326,7 @@ public class Node {
 
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
-            System.out.println("funcCall: " + this);
+            //System.out.println("funcCall: " + this);
             //System.out.println("functionName is " + functionName);
             /*
             if ( this.first != null ) {
@@ -367,10 +365,11 @@ public class Node {
                             }
                             else {
                                 double paramValue = args.first.evaluate();
-                                System.out.println(paramValue);
+                                System.out.println("paramValue: " + paramValue);
                                 args = args.first;
+                                // TODO memtable problem caused here.
                                 String paramName = checkFunction.first.paramNames[i];
-                                System.out.println(paramName);
+                                System.out.println("paramName: " + paramName);
                                 table.store(paramName, paramValue);
                                 //double test = table.retrieve(paramName);
                                 //System.out.println("Test is " + test);
@@ -379,7 +378,7 @@ public class Node {
                         }
                     }
                     else {
-                        System.out.println(functionName + " called with no arguments");
+                        //System.out.println(functionName + " called with no arguments");
                     }
 
                     checkFunction.first.execute();
@@ -576,7 +575,7 @@ public class Node {
         else if ( kind.equals("var") ) {
             String varName = this.info;
             double value = table.retrieve(varName);
-            System.out.println(varName + " = " + value);
+            //System.out.println(varName + " = " + value);
             return value;
         }
         else if ( kind.equals("opp") ) {
