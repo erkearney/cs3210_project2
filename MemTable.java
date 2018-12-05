@@ -33,7 +33,7 @@ public class MemTable {
      int loc = findName( name );
    
      if ( loc < 0 ) {// add new pair
-        System.out.println("Adding " + name + ", " + value);
+        //System.out.println("Adding " + name + ", " + value);
         names.add( name );
         values.add( value );
      }

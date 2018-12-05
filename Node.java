@@ -39,7 +39,6 @@ public class Node {
     private Node first, second, third;
 
     // The following 4 lines were taken directly from this group: https://github.com/jamesahhh/Corgi
-    private static boolean returnBool; //true if return statement has been executed
 
     // memory tables shared by all nodes but private to a function
     private static Stack<MemTable> tables;
@@ -183,36 +182,26 @@ public class Node {
            first.evaluate();
         }
         else if ( kind.equals("funcDef") ) {
-            //System.out.println("funcDef: Executing " + this.info);
-
             Node params = this.first;
             if ( params == null ) {
-                System.out.println("function: " + this.info + " has no parameters");
+                //System.out.println("function: " + this.info + " has no parameters");
             }
             else {
                 MemTable table = tables.pop();
-                while ( args != null ) {
-                    table.store(args.first.info, 0);
-                    args = args.second;
+                while ( args != null && params != null ) {
+                    table.store(params.info, args.first.evaluate());
+                    //System.out.println("name: " + params.info + " value: " + args.first.evaluate());
+                    if ( params!= null ) {
+                        params = params.first;    
+                    }
+                    if ( args!= null ) {
+                        args = args.second;
+                    }
                 }
-                // TODO maybe check if num args match num params when a function is called
+                if ( args != null || params != null ) {
+                    System.out.println("WARNING: The number of args passed to " + this.info + " does not match its number of defined parameters!");    
+                }
                 tables.push(table);
-                //System.out.println("params: " + params);
-                // Store the params in the paramNames array
-                /*
-                for (int i = 0; i < paramNames.length; i++ ) {
-                    if ( params.first == null ) {
-                        paramNames[i] = params.info;
-                        //System.out.println("The last param was " + paramNames[i]);
-                        break;
-                    }
-                    else {
-                        paramNames[i] = params.info;
-                        //System.out.println("Added " + paramNames[i] + " to paramNames");
-                        params = params.first;
-                    }
-                }
-                */
             }
 
             Node statements = this.second;
@@ -253,14 +242,14 @@ public class Node {
                     break;
                 default:
                     // May be a user-defined function
-                    this.first.execute();
+                    this.first.evaluate();
             }
         }
         else if ( kind.equals("stmts") ) {
             Node statement = this.first;
             //System.out.println("statement: " + statement);
             statement.execute();
-            if ( this.second != null ) {
+            if ( this.second != null && !returnBoolean ) {
                 Node statements = this.second;
                 //System.out.println("statements: " + statements);
                 statements.execute();
@@ -307,25 +296,28 @@ public class Node {
             //System.out.println("Got a bif2 " + this.info);
             switch ( this.info ) {
                 case "le":
-                    //System.out.println("le");
+                    System.out.println("le");
                     break;
                 default:
                     System.out.println("ERROR: " + this.info + " was not recognized as a bif2");
             }
         }
         else if ( kind.equals("sto") ) {
-            // TODO implement variable storage
             double value = this.first.evaluate();
             String varName = this.info;
             MemTable table = tables.pop();
             table.store(varName, value);
             tables.push( table );
-            System.out.println("Stored " + varName + " = " + value);
+            //System.out.println("Stored " + varName + " = " + value);
         }
         else if ( kind.equals("return") ) {
             // TODO implement return
             //System.out.println("Got return");
-            returnValue = this.evaluate();
+            //returnValue = this.evaluate();
+            //System.out.println("Calling evaluate for return");
+            returnValue = this.first.evaluate();
+            //System.out.println("Returning: " + returnValue);
+            returnBoolean = true;
         }
         else if ( kind.equals("num")) {
             double value = this.evaluate();
@@ -368,45 +360,7 @@ public class Node {
                 String checkFunctionName = checkFunction.first.info;
                 if ( functionName.equals(checkFunctionName) ) {
                     found = true;
-
-                    /*
-                    // Find the arguments
-                    if ( this.first != null ) {
-                        Node args = this.first;
-                        for ( int i = 0; i < paramNames.length; i++ ) {
-                            if ( args.first == null ) {
-                                System.out.println("There are no more arguments");
-                                break;
-                            }
-                            else {
-                                double paramValue = args.first.evaluate();
-                                //System.out.println("paramValue: " + paramValue);
-                                args = args.first;
-                                // TODO memtable problem caused here.
-                                String paramName = checkFunction.first.paramNames[i];
-                                //System.out.println("paramName: " + paramName);
-                                if ( paramName != null ) {
-                                    table.store(paramName, paramValue);
-                                }
-                                //this.paramValues[i] = paramValue;
-                                //System.out.println("paramValues[" + i + "] set to " + paramValue);
-                                //double test = table.retrieve(paramName);
-                                //System.out.println("Test is " + test);
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        //System.out.println(functionName + " called with no arguments");
-                    }
-                    */
-
                     checkFunction.first.execute();
-                    // Reset checkFunction to beginning
-                    /*
-                    checkFunction = funcDefs;
-                    return retval;
-                    */
                 }
                 else {
                     if ( checkFunction.second != null ) {
@@ -424,7 +378,7 @@ public class Node {
                 }
             }
             tables.pop();
-            returnBool = false;
+            returnBoolean = false;
             return returnValue;
 
         }
@@ -610,7 +564,7 @@ public class Node {
             MemTable table = tables.pop();
             double value = table.retrieve(varName);
             tables.push(table);
-            System.out.println(varName + " = " + value);
+            //System.out.println(varName + " = " + value);
             return value;
         }
         else if ( kind.equals("opp") ) {
@@ -620,8 +574,11 @@ public class Node {
         else if ( kind.equals("return") ) {
             //System.out.println("returning " + this.first.evaluate());
             //System.out.println("return first type: " + this.first);
+            /*
             returnValue = this.first.evaluate();
             return returnValue;
+            */
+            this.execute();
         }
         else {
             error("Unknown node kind in evaluate [" + kind + "]");
