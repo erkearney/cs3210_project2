@@ -347,7 +347,7 @@ public class Node {
 
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
-            //System.out.println("funcCall: " + this);
+            System.out.println("funcCall: " + this);
             //System.out.println("functionName is " + functionName);
             boolean found = false;
             tables.push(new MemTable());
@@ -497,17 +497,17 @@ public class Node {
             }
         }
         else if ( kind.equals("bif2") ) {
-            //System.out.println("bif2 this.info: " + this.info);
+            System.out.println("bif2 this.info: " + this.info);
             args = this.first;
             double arg1 = args.first.evaluate();
             System.out.println("arg1: " + arg1);
-            args = args.second;
-            //System.out.println("second args in " + this.info + ": " + args);
+            args = this.first.second;
             if ( args == null ) {
                 System.out.println("ERROR, bif2: " + this.info + " could not find its second argument!");    
                 return -1;
             }
             double arg2 = args.first.evaluate();
+            System.out.println("arg2: " + arg2);
             //System.out.println("arg2: " + arg2);
             switch (this.info) {
                 case "lt":

@@ -214,8 +214,9 @@ public class Parser {
         else if ( token.isKind("bif2") ) {
             token = lex.getNextToken();
             errorCheck( token, "Single", "(", "funcCall" );
+            //System.out.println("Parsing args for " + functionName);
             Node first = parseArgs();
-            System.out.println("bif2: " + functionName + " args: " + first);
+            //System.out.println("Finished parsing args for " + functionName);
             return new Node( "bif2", functionName, first, null, null );
         }
         else if ( token.isKind("var") ) {
@@ -247,18 +248,32 @@ public class Parser {
 
    private Node parseArgs() {
       //System.out.println("-----> parsing <args>");
-      /*
-      Token token = lex.getNextToken();
-      System.out.println("I think " + token.getDetails() + " is an arg");
-      lex.putBackToken( token );
-      */
       Node first = parseExpr();
-      // Look for ')'
+      // Look for ','
       Token token = lex.getNextToken();
-      //token = lex.getNextToken();
-      if ( token.matches("Single", ")") ) {
+      //System.out.println("Checking if " + token + " is , or )");
+      if ( token.matches("Single", ",") ) {
+         token = lex.getNextToken();
+         //System.out.println("Got another arg: " + token);
+         //System.out.println("I think " + token.getDetails() + " is another arg");
+         lex.putBackToken( token );
+         Node second = parseArgs();
+         //System.out.println("Finished parsing <args> -> <expr> <args>");
+         //System.out.println("First: " + first + " second: " + second);
+         return new Node("args", first, second, null);
+      }
+      else {
+         //System.out.println("No more args");
+         errorCheck( token, "Single", ")", "args" );
          //System.out.println("Finished parsing <args> -> <expr>");
          //System.out.println("First; " + first);
+         return new Node("args", first, null, null);
+      }
+      /*
+      if ( token.matches("Single", ")") ) {
+         System.out.println("Finished parsing <args> -> <expr>");
+         System.out.println("First; " + first);
+         System.out.println("---------------------");
          return new Node("args", first, null, null);
       }
       else {
@@ -267,10 +282,12 @@ public class Parser {
          //System.out.println("I think " + token.getDetails() + " is another arg");
          lex.putBackToken( token );
          Node second = parseArgs();
-         //System.out.println("Finished parsing <args> -> <expr> <args>");
-         //System.out.println("First: " + first + " second: " + second);
+         System.out.println("Finished parsing <args> -> <expr> <args>");
+         System.out.println("First: " + first + " second: " + second);
+         System.out.println("***********************");
          return new Node("args", first, second, null);
       }
+      */
    }
 
    private Node parseStatement() {
