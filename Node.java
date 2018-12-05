@@ -500,7 +500,7 @@ public class Node {
             //System.out.println("bif2 this.info: " + this.info);
             args = this.first;
             double arg1 = args.first.evaluate();
-            //System.out.println("arg1: " + arg1);
+            System.out.println("arg1: " + arg1);
             args = args.second;
             //System.out.println("second args in " + this.info + ": " + args);
             if ( args == null ) {

@@ -215,7 +215,8 @@ public class Parser {
             token = lex.getNextToken();
             errorCheck( token, "Single", "(", "funcCall" );
             Node first = parseArgs();
-            return new Node("bif2", functionName, first, null, null);
+            System.out.println("bif2: " + functionName + " args: " + first);
+            return new Node( "bif2", functionName, first, null, null );
         }
         else if ( token.isKind("var") ) {
             //String functionName = token.getDetails();
@@ -257,17 +258,17 @@ public class Parser {
       //token = lex.getNextToken();
       if ( token.matches("Single", ")") ) {
          //System.out.println("Finished parsing <args> -> <expr>");
+         //System.out.println("First; " + first);
          return new Node("args", first, null, null);
       }
       else {
          errorCheck( token, "Single", ",", "args" );
-         /*
          token = lex.getNextToken();
-         System.out.println("I think " + token.getDetails() + " is another arg");
+         //System.out.println("I think " + token.getDetails() + " is another arg");
          lex.putBackToken( token );
-         */
          Node second = parseArgs();
          //System.out.println("Finished parsing <args> -> <expr> <args>");
+         //System.out.println("First: " + first + " second: " + second);
          return new Node("args", first, second, null);
       }
    }
@@ -462,42 +463,12 @@ public class Parser {
           //System.out.println("Finished parsing <factor> -> <funcCall> (bif)");
           return new Node("factor", "bif", first, null, null);
       }
-      /*
-      else if ( token.isKind("bif0") ) {
-         String bifName = token.getDetails();
-         token = lex.getNextToken();
-         errorCheck( token, "Single", "(", "factor" );
-         token = lex.getNextToken();
-         errorCheck( token, "Single", ")", "factor" );
-         
-         return new Node( "bif0", bifName, null, null, null );
-      }
-      else if ( token.isKind("bif1") ) {
-         String bifName = token.getDetails();
-         token = lex.getNextToken();
-         errorCheck( token, "Single", "(", "factor" );
-         Node first = parseArgs();
-         errorCheck( token, "Single", ")", "factor" );
-         
-         return new Node( "bif1", bifName, first, null, null );
-      }
-      else if ( token.isKind("bif2") ) {
-         //System.out.println("-----> parsing bif2 " + token.getDetails());
-         String bifName = token.getDetails();
-         token = lex.getNextToken();
-         errorCheck( token, "Single", "(", "factor" );
-         Node first = parseArgs();
-         //System.out.println("Finished parsing <factor> -> <funcCall> -> <bif2>");
-         return new Node( "bif2", bifName, first, null, null );
-         
-      }
-      */
       else if ( token.matches("Single","-") ) {
          Node first = parseFactor();
          return new Node("opp", first, null, null );
       }
       else {
-         //System.out.println("Can't have factor starting with " + token );
+         System.out.println("Can't have factor starting with " + token );
          System.exit(1);
          return null;
       }
