@@ -25,8 +25,6 @@ public class Node {
                                   // of the called functions' funcDef node, 
                                   // which will be of type args
 
-    private static Node argNode;  // TODO maybe add comments explaining here
-
     private static double returnValue;
 
     private static boolean returnBoolean;
@@ -216,14 +214,14 @@ public class Node {
         }
         else if ( kind.equals("funcCall" ) ) {
             String functionName = this.first.info;
-            Node args = this.first;
+            args = this.first;
             //System.out.println(functionName + " called with " + args);
             // TODO see if more is needed here.
 
             switch (functionName) {
                 // Check if the called function is a built-in function
                 case "print":
-                    args = this.first.first;
+                    //args = this.first.first;
                     // print is a bif 1
                     if ( args.first == null ) {
                         error("ERROR: print takes 1 argument, use nl() to print an empty line");    
@@ -347,7 +345,7 @@ public class Node {
 
         if ( kind.equals("funcCall") ) {
             String functionName = this.info;
-            System.out.println("funcCall: " + this);
+            //System.out.println("funcCall: " + this);
             //System.out.println("functionName is " + functionName);
             boolean found = false;
             tables.push(new MemTable());
@@ -383,14 +381,6 @@ public class Node {
 
         }
         else if ( kind.equals("args") ) {
-            //System.out.println("args: " + this);    
-
-            // TODO take another look at args
-            if ( this.second != null ) {
-                System.out.println("Fix args, ~line 475");
-                return -1;
-            }
-            //System.out.println(this.info);
             return this.first.evaluate();
         }
         else if ( kind.equals("expr") ) {
@@ -497,17 +487,17 @@ public class Node {
             }
         }
         else if ( kind.equals("bif2") ) {
-            System.out.println("bif2 this.info: " + this.info);
+            //System.out.println("bif2 this.info: " + this.info);
             args = this.first;
             double arg1 = args.first.evaluate();
-            System.out.println("arg1: " + arg1);
+            //System.out.println("arg1: " + arg1);
             args = this.first.second;
             if ( args == null ) {
                 System.out.println("ERROR, bif2: " + this.info + " could not find its second argument!");    
                 return -1;
             }
             double arg2 = args.first.evaluate();
-            System.out.println("arg2: " + arg2);
+            //System.out.println("arg2: " + arg2);
             //System.out.println("arg2: " + arg2);
             switch (this.info) {
                 case "lt":
