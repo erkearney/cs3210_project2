@@ -1,3 +1,7 @@
+/*
+Thanks again to this group: https://github.com/jamesahhh/Corgi for sharing
+their solution with us, it was invaluable.
+*/
 /*  a Node holds one node of a parse tree
     with several pointers to children used
     depending on the kind of node
@@ -21,19 +25,29 @@ public class Node {
                                   // of the called functions' funcDef node, 
                                   // which will be of type args
 
-    private static double retval;   // Holds the return value of called functions
+    private static Node argNode;  // TODO maybe add comments explaining here
+
+    private static double returnValue;
+
+    private static boolean returnBoolean;
 
     private String kind;  // non-terminal or terminal category for the node
     private String info;  // extra information about the node such as
     // the actual identifier for an I
-    private String[] paramNames = new String[10];     // Used to store the names of the arguments of user-defined functions
-    //private double[] paramValues = new double[10];      // Used to store the values of the arguments of user-defined functions when those functions are called
 
     // references to children in the parse tree
     private Node first, second, third;
 
+    // The following 4 lines were taken directly from this group: https://github.com/jamesahhh/Corgi
+    private static boolean returnBool; //true if return statement has been executed
+
+    // memory tables shared by all nodes but private to a function
+    private static Stack<MemTable> tables;
+
+    /*
     // memory table shared by all nodes
     private static MemTable table = new MemTable();
+    */
 
     private static Scanner keys = new Scanner( System.in );
 
@@ -151,6 +165,7 @@ public class Node {
         //System.out.println("Executing a " + this.kind + " " + this.info);
 
         if ( kind.equals("program") ) {
+           tables = new Stack<MemTable>();
            // <program> -> <funcCall> | <funcCall> <funcDefs>
            if ( first == null ) {
               error("A Corgi program must have at least one function call");
@@ -172,11 +187,19 @@ public class Node {
 
             Node params = this.first;
             if ( params == null ) {
-                //System.out.println("function: " + this.info + " has no parameters");
+                System.out.println("function: " + this.info + " has no parameters");
             }
             else {
+                MemTable table = tables.pop();
+                while ( args != null ) {
+                    table.store(args.first.info, 0);
+                    args = args.second;
+                }
+                // TODO maybe check if num args match num params when a function is called
+                tables.push(table);
                 //System.out.println("params: " + params);
                 // Store the params in the paramNames array
+                /*
                 for (int i = 0; i < paramNames.length; i++ ) {
                     if ( params.first == null ) {
                         paramNames[i] = params.info;
@@ -189,6 +212,7 @@ public class Node {
                         params = params.first;
                     }
                 }
+                */
             }
 
             Node statements = this.second;
@@ -293,17 +317,19 @@ public class Node {
             // TODO implement variable storage
             double value = this.first.evaluate();
             String varName = this.info;
+            MemTable table = tables.pop();
             table.store(varName, value);
-            //System.out.println("Stored " + varName + " = " + value);
+            tables.push( table );
+            System.out.println("Stored " + varName + " = " + value);
         }
         else if ( kind.equals("return") ) {
             // TODO implement return
             //System.out.println("Got return");
-            retval = this.evaluate();
+            returnValue = this.evaluate();
         }
         else if ( kind.equals("num")) {
             double value = this.evaluate();
-            table.store(info, value);
+            //table.store(info, value);
         }
 
         else if ( kind.equals("cond")) {
@@ -331,24 +357,9 @@ public class Node {
             String functionName = this.info;
             //System.out.println("funcCall: " + this);
             //System.out.println("functionName is " + functionName);
-            /*
-            if ( this.first != null ) {
-                Node params = this.first;
-                System.out.println("params are: " + params);
-                if ( params.first != null ) {
-                    System.out.println("first is " + params.first);
-                    System.out.println("first's info is: " + params.first.info);
-                    System.out.println("first evaluates to " + params.first.evaluate());
-                }
-                if ( params.second != null ) {
-                    System.out.println("second is " + params.second);
-                    System.out.println("second's info is: " + params.first.info);
-                    System.out.println("second evaluates to " + params.second.evaluate());
-                }
-            }
-            */
-
             boolean found = false;
+            tables.push(new MemTable());
+            args = this.first;
             // funcDefs starts out as the first funcDefs Node created by Parser
             // we need to check all the funcDefs until we find one with the
             // same name as the one that was just called.
@@ -358,6 +369,7 @@ public class Node {
                 if ( functionName.equals(checkFunctionName) ) {
                     found = true;
 
+                    /*
                     // Find the arguments
                     if ( this.first != null ) {
                         Node args = this.first;
@@ -387,11 +399,14 @@ public class Node {
                     else {
                         //System.out.println(functionName + " called with no arguments");
                     }
+                    */
 
                     checkFunction.first.execute();
                     // Reset checkFunction to beginning
+                    /*
                     checkFunction = funcDefs;
                     return retval;
+                    */
                 }
                 else {
                     if ( checkFunction.second != null ) {
@@ -408,6 +423,9 @@ public class Node {
                     }
                 }
             }
+            tables.pop();
+            returnBool = false;
+            return returnValue;
 
         }
         else if ( kind.equals("args") ) {
@@ -589,8 +607,10 @@ public class Node {
         }
         else if ( kind.equals("var") ) {
             String varName = this.info;
+            MemTable table = tables.pop();
             double value = table.retrieve(varName);
-            //System.out.println(varName + " = " + value);
+            tables.push(table);
+            System.out.println(varName + " = " + value);
             return value;
         }
         else if ( kind.equals("opp") ) {
@@ -600,8 +620,8 @@ public class Node {
         else if ( kind.equals("return") ) {
             //System.out.println("returning " + this.first.evaluate());
             //System.out.println("return first type: " + this.first);
-            retval = this.first.evaluate();
-            return retval;
+            returnValue = this.first.evaluate();
+            return returnValue;
         }
         else {
             error("Unknown node kind in evaluate [" + kind + "]");
