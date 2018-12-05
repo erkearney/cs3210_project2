@@ -287,7 +287,7 @@ public class Parser {
          token = lex.getNextToken();
          errorCheck( token, "Single", "=", "statement" );
          Node first = parseExpr();
-         //System.out.println("Finished parsing <statement> -> <var> = <expr>");
+         //System.out.println("Finished parsing <statement> -> <var> " + varName + " = <expr>");
          return new Node( "sto", varName, first, null, null );
       }
       else if ( token.isKind("funcCall") ||

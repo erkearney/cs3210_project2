@@ -75,6 +75,7 @@ public class Lexer {
                         done = true;
                     }
                     else if ( sym == '/' ) {
+                        data += (char) sym;
                         state = 10;
                     }
                     else if ( sym == -1 ) {// end of file
@@ -154,9 +155,10 @@ public class Lexer {
                 else if ( state == 10 ) {
                     if ( sym == '*' ) {
                        state = 11;
+                       data = "";
                     } else {
+                       putBackSymbol( sym );
                        state = 8;
-                       data += (char) '/';
                        done = true;
                     }
                     /*
@@ -342,5 +344,6 @@ public class Lexer {
         }while( ! token.getKind().equals( "eof" )  );
 
     }
+
 
 }

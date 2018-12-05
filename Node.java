@@ -562,6 +562,8 @@ public class Node {
         else if ( kind.equals("var") ) {
             String varName = this.info;
             MemTable table = tables.pop();
+            //System.out.println("Retrieving " + varName);
+            //System.out.println(this);
             double value = table.retrieve(varName);
             tables.push(table);
             //System.out.println(varName + " = " + value);
